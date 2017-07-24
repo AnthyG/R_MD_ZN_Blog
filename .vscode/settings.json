@@ -1,5 +1,5 @@
 {
-    "liveSassCompile.settings.savePath": "/css/dist",
+    "liveSassCompile.settings.savePath": "/css",
     "liveSassCompile.settings.format": "nested",
     "liveSassCompile.settings.extensionName": ".min.css",
     "liveSassCompile.settings.excludeFolders": [

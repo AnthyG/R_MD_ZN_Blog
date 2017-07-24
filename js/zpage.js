@@ -139,6 +139,8 @@ var app = new Vue({
         main: '',
         footer: '',
         postList: [],
+        tagList: [],
+        tagPostList: {},
         pageList: [],
         footerList: [],
         defaults: {
@@ -151,7 +153,7 @@ var app = new Vue({
 
 var pages = {
     "About": function() {
-
+        console.log("Loading About-page")
     }
 }
 
@@ -247,9 +249,9 @@ function loadFooter(reload) {
         })
 }
 
-function loadBlog(qs, is_subpage, reload) {
+function loadBlog(qs, loadType, reload) {
     var reload = reload || false
-    var is_subpage = is_subpage || false
+    var loadType = loadType || -1
 
     app.hide_app = true
     app.collapse_header = true
@@ -261,11 +263,38 @@ function loadBlog(qs, is_subpage, reload) {
     app.main = ''
 
     setTimeout(function() {
-        console.log("Loading blog.. ", qs, is_subpage)
+        console.log("Loading blog.. ", qs, loadType)
 
-        if (typeof qs === "string" && qs !== "" && is_subpage) {
+        var loadPostTags = function(i, uh, tagList) {
+            console.log("Loading tags for post", i)
+            var genIt = function(tagList) {
+                var tLHTML = '<ul class="tags"><li class="tag">Tags</li>'
+                for (var x = 0; x < tagList.length; x++) {
+                    var y = tagList[x]
+                    tLHTML += '<li><a href="?T:' + y.value + '" onclick="loadBody>' + y.value + '</a></li>'
+                }
+                tLHTML += '</ul>'
+
+                var n_el = $(tLHTML)
+
+                $('#TAGREPLACE_' + uh).replaceWith(n_el)
+            }
+
+            // console.log(app.tagList.length > 0, typeof app.tagList[i] !== "undefined", !reload, app.tagList)
+            if (app.tagList.length > 0 && typeof app.tagList[i] !== "undefined" && !reload)
+                genIt(app.tagList)
+            else
+                page.cmd("dbQuery", [
+                    "SELECT * FROM tag WHERE post_id = " + i
+                ], (tagList) => {
+                    app.tagList[i] = tagList
+                    genIt(tagList)
+                })
+        }
+
+        if (loadType === 1 && typeof qs === "string" && qs !== "") {
             var genIt = function(page) {
-                console.log(page)
+                // console.log(page)
 
                 var body = marked(page.body, {
                     renderer: markedR
@@ -297,50 +326,64 @@ function loadBlog(qs, is_subpage, reload) {
                         showError('**This _page_ does _not_ exist**')
                     }
                 })
-        } else if (typeof qs === "number" && qs >= 0) {
+        } else if (loadType === 0 && typeof qs === "number" && qs >= 0) {
             var genIt = function(post) {
                 // console.log(post)
 
-                var body = post.body
-
-                body = '<div class="container"><h1 class="title">' + post.title + '</h1>' +
-                    '<div class="byline"><div class="avatar"></div>by <span>AnthyG</span></div>' +
-                    body
+                var bodyMD = post.body
+                var body = ''
 
                 var firstreplace = true
-                body = body
-                    .replace(
-                        /<SEC>([^.]*?)?(?=<\/SEC>)(?:<\/SEC>)?/gmi,
-                        function(m, c) {
-                            var str = marked(c) + '</div></section><section>'
-                            if (firstreplace) {
-                                firstreplace = false
-                            } else {
-                                str = '</section><section><div class="container">' + str
+                body = '<div class="container"><h1 class="title">' + post.title + '</h1>' +
+                    '<div class="byline"><div class="avatar"></div>by <span>AnthyG</span></div>' +
+                    (marked(bodyMD)
+                        // .replace(
+                        //     /<SEC>([^.]*?)?(?=<\/SEC>)(?:<\/SEC>)?/gmi,
+                        //     function(m, c) {
+                        //         var str = marked(c) + '</div></section><section>'
+                        //         if (firstreplace) {
+                        //             firstreplace = false
+                        //         } else {
+                        //             str = '</section><section><div class="container">' + str
+                        //         }
+
+                        //         return str
+                        //     }
+                        // )
+                        // .replace(
+                        //     /<QUOTE>([^.]*?)?(?=<\/QUOTE>)(?:<\/QUOTE>)?/gmi,
+                        //     function(m, c) {
+                        //         var str = '</section><section class="quote"><blockquote>' + c + '</blockquote></section><section>'
+
+                        //         return str
+                        //     }
+                        // )
+                        // .replace(
+                        //     /<P>([^.]*?)?(?=<\/P>)(?:<\/P>)?/gmi,
+                        //     '<p class="hide ah">$1</p>'
+                        // )
+                        .replace(
+                            /<blockquote>\n<p>([^.]*?)?(?=<\/p>\n<\/blockquote>)(?:<\/p>\n<\/blockquote>)?/gmi,
+                            function(m, c) {
+                                var str = '</div></section><section class="quote"><blockquote>' + c + '</blockquote></section><section><div class="container">'
+
+                                return str
                             }
+                        )
+                        .replace(
+                            /(<section> <\/section>|<section class="quote"><blockquote><\/blockquote><\/section>)/gmi,
+                            ''
+                        )
+                    )
+                    .replace(
+                        /<p>/gmi,
+                        '<p class="hide ah">'
+                    )
 
-                            return str
-                        }
-                    )
-                    .replace(
-                        /<QUOTE>([^.]*?)?(?=<\/QUOTE>)(?:<\/QUOTE>)?/gmi,
-                        function(m, c) {
-                            var str = '</section><section class="quote"><blockquote>' + c + '</blockquote></section><section>'
-
-                            return str
-                        }
-                    )
-                    .replace(
-                        /<P>([^.]*?)?(?=<\/P>)(?:<\/P>)?/gmi,
-                        '<p class="hide ah">$1</p>'
-                    )
-                    .replace(
-                        /(<section> <\/section>|<section class="quote"><blockquote><\/blockquote><\/section>)/gmi,
-                        ''
-                    )
+                var uh = Math.random().toString(36).substring(7);
 
                 // body = body.substr('</section><section><div class="container">'.length, body.length)
-                body = body.substr(0, body.length - '<section>'.length)
+                body = body /*.substr(0, body.length - '<section>'.length)*/ + '<div id="TAGREPLACE_' + uh + '"></div></div>'
 
                 ownLink("?P:" + qs)
                 app.quote = post.quote
@@ -350,11 +393,12 @@ function loadBlog(qs, is_subpage, reload) {
                 app.hide_date = false
                 app.collapse_header = false
                 app.main = default_main1 + body + default_main2
+                loadPostTags(qs, uh)
             }
 
             // console.log(typeof app.postList[qs])
-            if (app.postList.length > 0 && typeof app.postList[qs] !== "undefined" && !reload)
-                genIt(app.postList[qs])
+            if (app.postList.length > 0 && typeof app.postList[app.postList.length - 1 - qs] !== "undefined" && !reload)
+                genIt(app.postList[app.postList.length - 1 - qs])
             else
                 page.cmd("dbQuery", [
                     "SELECT * FROM post WHERE post_id = " + qs
@@ -368,9 +412,71 @@ function loadBlog(qs, is_subpage, reload) {
                         showError('**This _post_ does _not_ exist**')
                     }
                 })
+        } else if (loadType === 2 && typeof qs === "string" && qs !== "") {
+            var genIt = function(tagPostList) {
+                console.log(tagPostList)
+
+                var pLHTML = ''
+                for (var i = 0; i < tagPostList.length; i++) {
+                    var post = tagPostList[i]
+
+                    var body = post.body
+
+                    body = (marked(body
+                                // .match(/<SEC>([^.]*?)?(?=<\/SEC>)(?:<\/SEC>)?/gmi)[0]
+                                // .replace(/<SEC>|<\/SEC>|#/gmi, '') + ' **[...]**'
+                            )
+                            .replace(
+                                /<blockquote>\n<p>([^.]*?)?(?=<\/p>\n<\/blockquote>)(?:<\/p>\n<\/blockquote>)?/gmi,
+                                function(m, c) {
+                                    var str = '</div></section><section class="quote"><blockquote>' + c + '</blockquote></section><section><div class="container">'
+
+                                    return str
+                                }
+                            )
+                            .replace(
+                                /(<section> <\/section>|<section class="quote"><blockquote><\/blockquote><\/section>)/gmi,
+                                ''
+                            )
+                        )
+                        .replace(
+                            /<p>/gmi,
+                            '<p class="hide ah">'
+                        )
+
+                    var uh = Math.random().toString(36).substring(7);
+                    loadPostTags(i, uh)
+
+                    pLHTML += (i > 0 ? '<hr><section>' : '') + // class="preview"
+                        '<div class="container"><h2><a class="first after" href="?P:' + post.post_id + '" onclick="return loadBlog(' + post.post_id + ');">' + post.title + '</a></h2><h5>' +
+                        moment(post.date_published, "x").format("MMMM Do, YYYY") + '</h5>' +
+                        body +
+                        // '<a class="first before after" href="?P:' + post.post_id + '" onclick="return loadBlog(' + post.post_id + ');"><b>Read more</b></a>' +
+                        '<div id="TAGREPLACE_' + uh + '"></div></div>' + (i >= 0 ? '</section>' : '')
+                }
+
+                ownLink("?T:" + qs)
+                app.collapse_header = true
+                app.hide_quote = true
+                app.quote = ''
+                app.quoteBy = ''
+                app.hide_date = true
+                app.date = ''
+                app.main = default_main1 + pLHTML + default_main2
+            }
+
+            if (app.tagPostList.hasOwnProperty(qs) && !reload)
+                genIt(app.tagPostList)
+            else
+                page.cmd("dbQuery", [
+                    "SELECT * FROM post LEFT JOIN tag USING (post_id) WHERE value = '" + qs + "' ORDER BY date_published DESC"
+                ], (tagPostList) => {
+                    app.tagPostList[qs] = tagPostList
+                    genIt(tagPostList)
+                })
         } else {
             var genIt = function(postList) {
-                // console.log(postList)
+                console.log(postList)
 
                 var pLHTML = ''
                 for (var i = 0; i < postList.length; i++) {
@@ -378,17 +484,37 @@ function loadBlog(qs, is_subpage, reload) {
 
                     var body = post.body
 
-                    body = marked(body
-                        .match(/<SEC>([^.]*?)?(?=<\/SEC>)(?:<\/SEC>)?/gmi)[0]
-                        .replace(/<SEC>|<\/SEC>|#/gmi, '') + ' **[...]**'
-                    )
+                    body = (marked(body
+                                // .match(/<SEC>([^.]*?)?(?=<\/SEC>)(?:<\/SEC>)?/gmi)[0]
+                                // .replace(/<SEC>|<\/SEC>|#/gmi, '') + ' **[...]**'
+                            )
+                            .replace(
+                                /<blockquote>\n<p>([^.]*?)?(?=<\/p>\n<\/blockquote>)(?:<\/p>\n<\/blockquote>)?/gmi,
+                                function(m, c) {
+                                    var str = '</div></section><section class="quote"><blockquote>' + c + '</blockquote></section><section><div class="container">'
 
-                    console.log(body)
+                                    return str
+                                }
+                            )
+                            .replace(
+                                /(<section> <\/section>|<section class="quote"><blockquote><\/blockquote><\/section>)/gmi,
+                                ''
+                            )
+                        )
+                        .replace(
+                            /<p>/gmi,
+                            '<p class="hide ah">'
+                        )
 
-                    pLHTML += (i !== 0 ? '<section class="preview">' : '') +
+                    var uh = Math.random().toString(36).substring(7);
+                    loadPostTags(i, uh)
+
+                    pLHTML += (i > 0 ? '<hr><section>' : '') + // class="preview"
                         '<div class="container"><h2><a class="first after" href="?P:' + post.post_id + '" onclick="return loadBlog(' + post.post_id + ');">' + post.title + '</a></h2><h5>' +
                         moment(post.date_published, "x").format("MMMM Do, YYYY") + '</h5>' +
-                        body + '<a class="first before after" href="?P:' + post.post_id + '" onclick="return loadBlog(' + post.post_id + ');"><b>Read more</b></a></div>' + (i !== 0 ? '</section>' : '')
+                        body +
+                        // '<a class="first before after" href="?P:' + post.post_id + '" onclick="return loadBlog(' + post.post_id + ');"><b>Read more</b></a>' +
+                        '<div id="TAGREPLACE_' + uh + '"></div></div>' + (i >= 0 ? '</section>' : '')
 
                     // pLHTML += '<section>' + marked(body, {
                     //     renderer: markedR
@@ -405,11 +531,12 @@ function loadBlog(qs, is_subpage, reload) {
                 app.main = default_main1 + pLHTML + default_main2
             }
 
+            // console.log(app.postList.length > 0, !reload)
             if (app.postList.length > 0 && !reload)
                 genIt(app.postList)
             else
                 page.cmd("dbQuery", [
-                    "SELECT * FROM post"
+                    "SELECT * FROM post ORDER BY date_published DESC"
                 ], (postList) => {
                     app.postList = postList
                     genIt(postList)
@@ -422,6 +549,7 @@ function loadBlog(qs, is_subpage, reload) {
 
 
 
+var follow;
 class Page extends ZeroFrame {
     onRequest(cmd, message) {
         if (cmd == "setSiteInfo") {
@@ -443,24 +571,67 @@ class Page extends ZeroFrame {
 
     onOpenWebsocket() {
         this.cmd("siteInfo", [], function(site_info) {
-            this.site_info = site_info
+            page.site_info = site_info
             page.setSiteInfo(site_info)
+
+            page.cmd("serverInfo", [], (res) => {
+                page.server_info = res
+            })
+
+            page.initFollowButton()
         })
 
         loadDefaults()
 
-        var qs = getParameterByName('P') || getParameterByName('S')
-        var is_subpage = false
+        var qs,
+            qs0 = getParameterByName('P'),
+            qs1 = getParameterByName('S'),
+            qs2 = getParameterByName('T')
+        var loadType = 0
 
-        if (parseInt(qs) >= 0)
-            qs = parseInt(qs)
-        else if (typeof qs === "string" && qs !== "")
-            is_subpage = true
-        else
-            qs = undefined
+        if (parseInt(qs0) >= 0)
+            qs = parseInt(qs0)
+        else if (typeof qs1 === "string" && qs1 !== "") {
+            qs = qs1
+            loadType = 1
+        } else if (typeof qs2 === "string" && qs2 !== "") {
+            qs = qs2
+            loadType = 2
+        } else {
+            loadType = -1
+        }
 
-        loadBlog(qs, is_subpage)
+        loadBlog(qs, loadType)
         loadFooter()
+    }
+
+    initFollowButton() {
+        follow = new Follow($("#subscribe_btn"))
+        follow.addFeed("Posts",
+            "SELECT post_id AS event_uri, 'post' AS type, date_published AS date_added, title AS title, body AS body, '?P:' || post_id AS url FROM post",
+            false
+        )
+        if (page.site_info.cert_user_id) {
+            var username = page.site_info.cert_user_id.replace(/@.*/, "")
+            follow.addFeed("Username mentions",
+                "SELECT 'mention' AS type, date_added, post.title AS title, keyvalue.value || ': ' || comment.body AS body, " +
+                "'?P:' || comment.post_id || '#Comments' AS url FROM comment LEFT JOIN json USING (json_id)" +
+                "LEFT JOIN json AS json_content ON (json_content.directory = json.directory AND json_content.file_name='content.json')" +
+                "LEFT JOIN keyvalue ON (keyvalue.json_id = json_content.json_id AND key = 'cert_user_id')" +
+                "LEFT JOIN post ON (comment.post_id = post.post_id) WHERE" +
+                "comment.body LIKE '%[" + username + "%' OR comment.body LIKE '%@" + username + "%'",
+                false
+            )
+        }
+        follow.addFeed("Comments",
+            "SELECT 'comment' AS type, date_added, post.title AS title, keyvalue.value || ': ' || comment.body AS body," +
+            "'?P:' || comment.post_id || '#Comments' AS url FROM comment LEFT JOIN json USING (json_id)" +
+            "LEFT JOIN json AS json_content ON (json_content.directory = json.directory AND json_content.file_name='content.json')" +
+            "LEFT JOIN keyvalue ON (keyvalue.json_id = json_content.json_id AND key = 'cert_user_id')" +
+            "LEFT JOIN post ON (comment.post_id = post.post_id)",
+            false
+        )
+        follow.init()
     }
 }
 page = new Page()
