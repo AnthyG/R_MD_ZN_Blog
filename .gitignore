@@ -218,3 +218,4 @@ pip-log.txt
 // Own Files
 node_modules/
 disabled/
+data/
