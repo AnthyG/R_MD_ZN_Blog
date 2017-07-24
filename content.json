@@ -1,0 +1,51 @@
+{
+ "address": "1MdwanV12uDDiVsgrsifDFdSsigLRD9dzu",
+ "address_index": 42718485,
+ "background-color": "#FFF",
+ "clone_root": "template-new",
+ "cloned_from": "1HeLLo4uzjaLetFx6NH3PMwFP3qbRbTf3D",
+ "description": "My very own Blog, to blog bloggy stuff",
+ "files": {
+  "css/all.css": {
+   "sha512": "091327f6d55c2b721194db42c7f29fa520206f39496990af139d2fc21882fbac",
+   "size": 37199
+  },
+  "data/data.json": {
+   "sha512": "36a12f7d5424a255512f7027c8f99b7f1e2bab23a18654119d44a77463f91d50",
+   "size": 932
+  },
+  "dbschema.json": {
+   "sha512": "ea26965f4808d8a7cda79e9dbf8c324ae8ec81888cc3ea0c53fc0432215a3fcf",
+   "size": 1304
+  },
+  "example.html": {
+   "sha512": "4c2475d7ea3578da7166a61dcee32d218d0e4edba01383dc101cfbbd1d52282c",
+   "size": 9333
+  },
+  "index.html": {
+   "sha512": "ad6fb23df50ea3c76ac26b537c6fe415bf6abe803d6e71c8f8972f829a865706",
+   "size": 3199
+  },
+  "index2.html": {
+   "sha512": "cef8afca5356ebe792fa0beae31ab6859c315dff665534b6752f7e2fb260a9e6",
+   "size": 4095
+  },
+  "js/all.js": {
+   "sha512": "0a367b549ce5ad4b6136c7a9ba08649cd61380057d7cfa01d7da737357971a69",
+   "size": 472730
+  }
+ },
+ "ignore": "((js|css)/(?!all.(js|css))|data/.*db|data/users/.*/.*|node_modules|sass|.vscode|disabled)",
+ "inner_path": "content.json",
+ "modified": 1500853946,
+ "postmessage_nonce_security": true,
+ "signers_sign": "G2+EStnWM4s7UtqAkHdz6opaCmXqumB1QkilLDvEaFAPR15vBILktlHtDCvdAPUTZ+8uglTvVc5562C7imz+ClA=",
+ "signs": {
+  "1MdwanV12uDDiVsgrsifDFdSsigLRD9dzu": "HADqVMToEEiJ6ElZZVCRqLEkXDCMMQCBXD8+5WIFmOW3BEva0N9VfwD2S2PuwjFSIPRjyImWbzgTS2KyxIjOua0="
+ },
+ "signs_required": 1,
+ "title": "Glightstar's Blog",
+ "translate": ["js/all.js"],
+ "viewport": "width=device-width, initial-scale=1.0, shrink-to-fit=no",
+ "zeronet_version": "0.5.7"
+}

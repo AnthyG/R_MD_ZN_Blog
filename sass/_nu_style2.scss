@@ -1,0 +1,102 @@
+/* position: relative; top: x */
+
+$PX: 1px;
+$prT_m: 4;
+@mixin prT-x {
+    $prT-list: null;
+    @for $i from 1 through $prT_m {
+        .prT-#{$i} {
+            top: $i * $PX;
+        }
+        $prT-list: append($prT-list, unquote(".prT-#{$i}"), comma);
+    }
+    #{$prT-list} {
+        position: relative;
+    }
+}
+
+@include prT-x;
+
+/* Override Elements */
+
+section p {
+    font-family: 'Source Sans Pro', serif
+}
+
+section.preview p {
+    margin-bottom: 25px;
+}
+
+section h1.title {
+    padding-left: 4px;
+    font-size: 2rem;
+}
+
+header.collapsed {
+    height: 10vh;
+}
+
+.hide2 {
+    display: none;
+}
+
+
+/* Other Elements */
+
+a,
+a:visited,
+a:hover,
+a:active {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    position: relative;
+    transition: 0.5s color ease;
+    text-decoration: none;
+    color: $color-p;
+}
+
+a:hover {
+    color: $color-a;
+}
+
+a.before:before,
+a.after:after {
+    content: "";
+    transition: 0.5s all ease;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    position: absolute;
+}
+
+a.before:before {
+    top: -0.25em;
+}
+
+a.after:after {
+    bottom: -0.25em;
+}
+
+a.before:before,
+a.after:after {
+    height: 5px;
+    height: 0.3rem;
+    width: 0;
+    background: $color-p;
+}
+
+a.first:after {
+    left: 0;
+}
+
+a.before:hover:before,
+a.after:hover:after {
+    width: 100%;
+}
+
+.card {
+    margin-left: 1rem;
+    margin-top: 2em;
+    margin-bottom: 3em;
+    border-radius: 3px;
+    box-shadow: 0 1.25rem 1rem -1.5rem rgba(43, 75, 82, 0.4), 0 0.5rem 1.75rem -0.25rem rgba(43, 75, 82, 0.2), 0 1.25rem 2.5rem rgba(43, 75, 82, 0.2)
+}

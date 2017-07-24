@@ -1,0 +1,11 @@
+{
+    "liveSassCompile.settings.savePath": "/css/dist",
+    "liveSassCompile.settings.format": "nested",
+    "liveSassCompile.settings.extensionName": ".min.css",
+    "liveSassCompile.settings.excludeFolders": [
+        "**/node_modules/**",
+        "**/.vscode/**",
+        "**/css/**",
+        "**/disabled/**"
+    ]
+}

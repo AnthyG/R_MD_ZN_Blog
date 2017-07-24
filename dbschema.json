@@ -1,0 +1,57 @@
+{
+    "db_name": "Blog",
+    "db_file": "data/blog.db",
+    "version": 2,
+    "maps": {
+        "data.json": {
+            "to_table": [
+                "post",
+                "page",
+                "footer"
+            ],
+            "to_keyvalue": [
+                "author",
+                "title",
+                "description",
+                "copyright",
+                "next_post_id",
+                "modified"
+            ]
+        }
+    },
+    "tables": {
+        "page": {
+            "cols": [
+                ["title", "TEXT"],
+                ["md", "BOOLEAN"],
+                ["body", "TEXT"],
+                ["json_id", "INTEGER REFERENCES json (json_id)"]
+            ],
+            "indexes": ["CREATE UNIQUE INDEX page_id ON page(json_id, title)"],
+            "schema_changed": 2
+        },
+        "footer": {
+            "cols": [
+                ["title", "TEXT"],
+                ["new_tab", "BOOLEAN"],
+                ["links", "TEXT"],
+                ["json_id", "INTEGER REFERENCES json (json_id)"]
+            ],
+            "indexes": ["CREATE UNIQUE INDEX footer_id ON footer(json_id, title)"],
+            "schema_changed": 4
+        },
+        "post": {
+            "cols": [
+                ["post_id", "INTEGER"],
+                ["title", "TEXT"],
+                ["quote", "TEXT"],
+                ["quoteBy", "TEXT"],
+                ["body", "TEXT"],
+                ["date_published", "INTEGER"],
+                ["json_id", "INTEGER REFERENCES json (json_id)"]
+            ],
+            "indexes": ["CREATE UNIQUE INDEX post_uri ON post(json_id, post_id)", "CREATE INDEX post_id ON post(post_id)"],
+            "schema_changed": 2
+        }
+    }
+}

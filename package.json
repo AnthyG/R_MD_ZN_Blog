@@ -1,0 +1,35 @@
+{
+    "name": "r_md_zn_blog",
+    "version": "0.1.0",
+    "description": "Responsive Material Design Blog for the ZeroNet",
+    "main": "index.html",
+    "dependencies": {
+        "bourbon": "4.3.4",
+        "bourbon-neat": "1.9.0"
+    },
+    "devDependencies": {},
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/AnthyG/R_MD_ZN_Blog.git"
+    },
+    "keywords": [
+        "MaterialDesign",
+        "MD",
+        "Responsive",
+        "HTML5",
+        "CSS3",
+        "Javascript",
+        "Markdown",
+        "Blog",
+        "Social"
+    ],
+    "author": "AnthyG",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/AnthyG/R_MD_ZN_Blog/issues"
+    },
+    "homepage": "https://github.com/AnthyG/R_MD_ZN_Blog#readme"
+}
