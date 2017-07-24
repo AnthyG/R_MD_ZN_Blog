@@ -70,7 +70,7 @@ header {
     &:after {
         filter: blur(5px);
         background-attachment: fixed;
-        background-image: url('/images/header.jpg');
+        background-image: url('../data/images/header.jpg');
         background-position: bottom center;
         background-repeat: no-repeat;
         background-size: cover;
@@ -291,7 +291,7 @@ section {
             width: 30px;
             height: 30px;
             margin-right: 5px;
-            background-image: url('/images/avatar.jpg');
+            background-image: url('../data/images/avatar.jpg');
             background-size: cover;
             background-color: $color-a;
             border-radius: 50%;
