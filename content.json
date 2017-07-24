@@ -6,42 +6,62 @@
  "cloned_from": "1HeLLo4uzjaLetFx6NH3PMwFP3qbRbTf3D",
  "description": "My very own Blog, to blog bloggy stuff",
  "files": {
+  "README.md": {
+   "sha512": "b6fc514e00248bd4f7cf6a3e0f0a7c017df70f33a4d6fc60d7cfaf72ebb5921c",
+   "size": 253
+  },
   "css/all.css": {
-   "sha512": "091327f6d55c2b721194db42c7f29fa520206f39496990af139d2fc21882fbac",
-   "size": 37199
+   "sha512": "25e209db3a8ea3b1771a110314844233f5a30622f38780999514802b3d72f65a",
+   "size": 42312
+  },
+  "data-default/data-default.json": {
+   "sha512": "57d4e45184dfe5ce8b744f0aac6fdbde1e2e5ae588de6633b0a90ca0b2eb599c",
+   "size": 1321
   },
   "data/data.json": {
-   "sha512": "36a12f7d5424a255512f7027c8f99b7f1e2bab23a18654119d44a77463f91d50",
-   "size": 932
+   "sha512": "589b89ed3eb4e6cc24f4e612cc87200ea3e38ec419c3a6b29d39252db575f939",
+   "size": 2186
+  },
+  "data/images/avatar.jpg": {
+   "sha512": "bb2e7aa8d0fbbf41f2804c4e5a68cfd711459e1c2976f06b25f798480011cf34",
+   "size": 1768
+  },
+  "data/images/header.jpg": {
+   "sha512": "ca5f11d1b85c434aee0561a805aa0098dd1e3fe993179ba4523555c31c22cf79",
+   "size": 2436526
   },
   "dbschema.json": {
-   "sha512": "ea26965f4808d8a7cda79e9dbf8c324ae8ec81888cc3ea0c53fc0432215a3fcf",
-   "size": 1304
+   "sha512": "4ea0304cb648075319b8c8d30a5d27bfde8c875a011c98b10dcef32ec94e9a46",
+   "size": 2420
   },
   "example.html": {
-   "sha512": "4c2475d7ea3578da7166a61dcee32d218d0e4edba01383dc101cfbbd1d52282c",
-   "size": 9333
+   "sha512": "d22fc72b075a87fff9debc42dc29aed91c076b2d5367da7dbc5bbb0db3d4cfb6",
+   "size": 8803
   },
   "index.html": {
-   "sha512": "ad6fb23df50ea3c76ac26b537c6fe415bf6abe803d6e71c8f8972f829a865706",
-   "size": 3199
+   "sha512": "3f4ec4e218a054c99563de17940169142bd9f2552d93bada07ef0030e6efdb1d",
+   "size": 3563
   },
   "index2.html": {
    "sha512": "cef8afca5356ebe792fa0beae31ab6859c315dff665534b6752f7e2fb260a9e6",
    "size": 4095
   },
   "js/all.js": {
-   "sha512": "0a367b549ce5ad4b6136c7a9ba08649cd61380057d7cfa01d7da737357971a69",
-   "size": 472730
+   "sha512": "56a3f0833663a074354372c19328e59423d1fdd851df21abcd5d72b2c880da4b",
+   "size": 558805
+  },
+  "package.json": {
+   "sha512": "943299b6337609b4596e88cc67baec0905a4c2a256c4d5ecdac11fe6126a4604",
+   "size": 856
   }
  },
- "ignore": "((js|css)/(?!all.(js|css))|data/.*db|data/users/.*/.*|node_modules|sass|.vscode|disabled)",
+ "ignore": "((js|css)/(?!all.(js|css))|data/.*db|data/users/.*/.*|node_modules|sass|.vscode|.git|disabled)",
  "inner_path": "content.json",
- "modified": 1500853946,
+ "modified": 1500913971,
  "postmessage_nonce_security": true,
  "signers_sign": "G2+EStnWM4s7UtqAkHdz6opaCmXqumB1QkilLDvEaFAPR15vBILktlHtDCvdAPUTZ+8uglTvVc5562C7imz+ClA=",
  "signs": {
-  "1MdwanV12uDDiVsgrsifDFdSsigLRD9dzu": "HADqVMToEEiJ6ElZZVCRqLEkXDCMMQCBXD8+5WIFmOW3BEva0N9VfwD2S2PuwjFSIPRjyImWbzgTS2KyxIjOua0="
+  "1MdwanV12uDDiVsgrsifDFdSsigLRD9dzu": "HFllGw8R5Hd0O0BFKXHIgjWptW7UrINu0BXGsf2EPGMuW2jwYZBSRH9ShqQHw+W2iABsPnMcOvV1Uv26K1YF484="
  },
  "signs_required": 1,
  "title": "Glightstar's Blog",

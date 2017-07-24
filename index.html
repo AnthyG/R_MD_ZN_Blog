@@ -30,7 +30,7 @@
         <header v-bind:class="{'collapsed' : collapse_header }">
             <div class="container">
                 <nav>
-                    <a class="logo" href="?" onclick="return loadBlog();">
+                    <a class="logo" href="?" onclick="return loadBlog(null, false, true);">
                         <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
                             <circle class="st0" cx="25" cy="25" r="25"/>
                             <g>
@@ -39,7 +39,7 @@
                         </svg>
                     </a>
                     <div class="subscribe">
-                        <a href="#">Subscribe</a>
+                        <a href="#Follow" id="subscribe_btn" onclick="return false;"><span>Subscribe</span><span>Subscribed</span></a>
                     </div>
                 </nav>
                 <blockquote v-bind:class="{'hide2' : hide_quote }">{{ quote }}
@@ -55,7 +55,7 @@
         </sections>
 
         <footer class="footer">
-            <a class="footer-logo" href="?" onclick="return loadBlog();">
+            <a class="footer-logo" href="?" onclick="return loadBlog(null, false, true);">
                 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
                     <circle class="st0" cx="25" cy="25" r="25"/>
                     <g>
@@ -75,6 +75,9 @@
         </footer>
     </div>
 
+    <div class="menu template">
+        <a href="#" class="menu-item template">Template</a>
+    </div>
     <script type="text/javascript" src="js/all.js"></script>
 
 </body>

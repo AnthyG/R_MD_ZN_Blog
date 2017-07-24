@@ -1,0 +1,38 @@
+{
+    "author": "Author",
+    "title": "Author's Blog",
+    "description": "a Blog",
+    "copyright": "Author",
+    "next_post_id": 1,
+    "modified": 0,
+    "footer": [{
+        "title": "Content",
+        "new_tab": false,
+        "links": "[About](About),[Contact](Contact)"
+    }, {
+        "title": "Follow me",
+        "new_tab": true,
+        "links": "[ZeroMe](/Me.ZeroNetwork.bit/),[Link 2](/link2)"
+    }],
+    "page": [{
+        "title": "About",
+        "md": true,
+        "body": "A beautiful Responsive Material-Design Blog for the ZeroNet, by @AnthyG"
+    }, {
+        "title": "Contact",
+        "md": true,
+        "body": "A list of ways, to get in touch with me:\n- [ZeroMe](/Me.ZeroNetwork.bit/)\n- [ZeroMail](/Mail.ZeroNetwork.bit/?to=glightstar@zeroid.bit)"
+    }, {
+        "title": "Settings",
+        "md": false,
+        "body": ""
+    }],
+    "post": [{
+        "post_id": 0,
+        "title": "Hello!",
+        "quote": "da peece! ;)",
+        "quoteBy": "AnthyG",
+        "date_published": 1500831891906,
+        "body": "<SEC># Yeah, look at your shiny new ZeroBlog on the ZeroNet!\n### I mean, isn't this Blog a beauty?!</SEC> <QUOTE>And checkout this cool quote!! :D</QUOTE> <SEC>It even supports Markdown!!\n_**NOICE**_ :)\n`BLABLABLA`</SEC>"
+    }]
+}
