@@ -1,2 +1,2 @@
 # R_MD_ZN_Blog
-Responsive Material Design Blog for the ZeroNet
+A beautiful Responsive Material-Design Blog for the ZeroNet
