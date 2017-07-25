@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Blog</title>
+    <meta charset="utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="" target="_top" id="base">
+    <link rel="stylesheet" href="css/all.css" />
+    <script>
+        base.href = document.location.href.replace("/media", "").replace("index.html", "").replace(/[&?]wrapper=False/, "").replace(/[&?]wrapper_nonce=[A-Za-z0-9]+/, "")
+    </script>
+
+    <style type="text/css">
+        .st0 {
+            fill: #FFFFFF;
+        }
+        
+        .st1 {
+            fill: #e91e63;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" v-bind:class="{'hide2' : hide_app }">
+        <header v-bind:class="{'collapsed' : collapse_header }">
+            <div class="container">
+                <nav>
+                    <a class="logo" href="?" onclick="return app.loadBlog(-1);">
+                        <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
+                            <circle class="st0" cx="25" cy="25" r="25"/>
+                            <g>
+                                <polygon class="st1" points="34.1,25 27.7,13.9 21.3,25 19.2,28.7 16.5,24 13,30 9.5,36.1 14.9,36.1 16.5,36.1 23.5,36.1 27.7,36.1 40.5,36.1"/>
+                            </g>
+                        </svg>
+                    </a>
+                    <div class="subscribe">
+                        <a href="#Follow" id="subscribe_btn" onclick="return false;"><span>Subscribe</span><span>Subscribed</span></a>
+                    </div>
+                </nav>
+                <blockquote v-bind:class="{'hide2' : hide_quote }">{{ quote }}
+                    <span>&mdash; {{ quoteBy }}</span>
+                </blockquote>
+                <div class="date" v-bind:class="{'hide2' : hide_date }">
+                    <i class="material-icons prT-2">event</i> {{ date }}
+                </div>
+            </div>
+        </header>
+
+        <sections id="main">
+            <div v-for="(post, index) in pPostList">
+                <hr v-if="index > 0">
+                <section>
+                    <div class="container">
+                        <h2 v-if="!singlePost">
+                            <a is="PostLink" v-bind:id="post.post_id" v-bind:title="post.title"></a>
+                            <!-- <a class="first after" v-bind:href="'?P:' + post.post_id" v-on:click="'loadBlog(' + post.post_id + ');'" onclick="return false;">{{ post.title }}</a> -->
+                        </h2>
+                        <h1 v-else class="title">{{ post.title }}</h1>
+
+                        <h5>{{ post.date_published }}</h5>
+                        <div class="byline">
+                            <div class="avatar"></div>
+                            by <span>AnthyG</span>
+                        </div>
+                        <ul></ul>
+                        <div v-html="markPost(post.body)"></div>
+                    </div>
+                </section>
+            </div>
+        </sections>
+
+        <footer class="footer">
+            <a class="footer-logo" href="?" onclick="return loadBlog(null, false, true);">
+                <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
+                    <circle class="st0" cx="25" cy="25" r="25"/>
+                    <g>
+                        <polygon class="st1" points="34.1,25 27.7,13.9 21.3,25 19.2,28.7 16.5,24 13,30 9.5,36.1 14.9,36.1 16.5,36.1 23.5,36.1 27.7,36.1 40.5,36.1"/>
+                    </g>
+                </svg>
+            </a>
+            <div class="footer-links" v-html="footer">
+            </div>
+
+            <div class="disclaimer">
+                <p>Copyright &copy;
+                    <script>
+                        document.write(new Date().getFullYear());
+                    </script> &nbsp;&nbsp;|&nbsp;&nbsp; <span v-html="defaults.copyright"></span></p>
+            </div>
+        </footer>
+    </div>
+
+    <div class="menu template">
+        <a href="#" class="menu-item template">Template</a>
+    </div>
+
+    <script type="text/javascript" src="js/lib/buefy.js"></script>
+    <script type="text/javascript" src="js/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="js/lib/marked.min.js"></script>
+    <script type="text/javascript" src="js/lib/vue.min.js"></script>
+
+    <script>
+        function d2h(d) {
+            return d.toString(16)
+        }
+
+        function h2d(h) {
+            return parseInt(h, 16)
+        }
+
+        function stringToHex(tmp) {
+            var str = '',
+                i = 0,
+                tmp_len = tmp.length,
+                c
+
+            for (; i < tmp_len; i += 1) {
+                c = tmp.charCodeAt(i)
+                str += d2h(c) + ' '
+            }
+            return str
+        }
+
+        function hexToString(tmp) {
+            var arr = tmp.split(' '),
+                str = '',
+                i = 0,
+                arr_len = arr.length,
+                c
+
+            for (; i < arr_len; i += 1) {
+                c = String.fromCharCode(h2d(arr[i]))
+                str += c
+            }
+
+            return str
+        }
+
+
+
+        marked.setOptions({
+            "gfm": true,
+            "breaks": true,
+            "sanitize": true,
+            "smartLists": true,
+            "smartypants": true,
+            "highlight": function(code) {
+
+                // console.log("Highlighting >> ", code)
+                return hljs.highlightAuto(code).value
+            }
+        })
+
+        var markedR = new marked.Renderer()
+        markedR.link = function(href, title, text) {
+            var href = href || '',
+                title = title || '',
+                text = text || ''
+
+            if (this.options.sanitize) {
+                try {
+                    var prot = decodeURIComponent(unescape(href))
+                        .replace(/[^\w:]/g, '')
+                        .toLowerCase()
+                } catch (e) {
+                    return ''
+                }
+                if (prot.indexOf('javascript:') === 0 || prot.indexOf('vbscript:') === 0 || prot.indexOf('data:') === 0) {
+                    return ''
+                }
+            }
+
+            return '<a href="' + href + '" onclick="return openNewTab(\'' + href + '\');" ' + (title ? ('title="' + title + '"') : '') + '>' + text + '</a>'
+        }
+        var markedR2 = new marked.Renderer()
+        markedR2.link = function(href, title, text) {
+            var href = href || '',
+                title = title || '',
+                text = text || ''
+
+            if (this.options.sanitize) {
+                try {
+                    var prot = decodeURIComponent(unescape(href))
+                        .replace(/[^\w:]/g, '')
+                        .toLowerCase()
+                } catch (e) {
+                    return ''
+                }
+                if (prot.indexOf('javascript:') === 0 || prot.indexOf('vbscript:') === 0 || prot.indexOf('data:') === 0) {
+                    return ''
+                }
+            }
+
+            return '<a href="?S:' + href + '" onclick="return loadBlog(\'' + href + '\', 1);" ' + (title ? ('title="' + title + '"') : '') + '>' + text + '</a>'
+        }
+
+
+
+        function openNewTab(url) {
+            page.cmd("wrapperOpenWindow", [url, "_blank", ""])
+            return false
+        }
+
+        function ownLink(q) {
+            app.curPage = q
+            page.cmd('wrapperPushState', [null, '', q])
+            $(window).scrollTop(0)
+            app.hide_app = false
+
+            return false
+        }
+
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(:([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+
+
+
+        Vue.use(Buefy)
+
+        Vue.component('PostLink', {
+            template: '\
+                <a class="first after" v-bind:href="\'?P:\' + id" v-bind:onclick="\'return app.loadBlog(\' + id + \')\'">{{ title }}</a>\
+            ',
+            props: ["title", "id"]
+        })
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                quote: '',
+                quoteBy: '',
+                date: '',
+                collapse_header: true,
+                hide_app: true,
+                hide_date: true,
+                hide_quote: true,
+                default_main1: '<section class="preview"><div class="scroll"><i class="material-icons">arrow_downward</i></div>',
+                default_main2: '</section>',
+                defaults: {
+                    copyright: ''
+                },
+                singlePost: false,
+                footer: '',
+                postList: [{
+                    "post_id": 1,
+                    "title": "Testin some stuff",
+                    "quote": "A quote",
+                    "quoteBy": "I dunno",
+                    "date_published": 1500906320468,
+                    "body": "Hello :)"
+                }, {
+                    "post_id": 0,
+                    "title": "Yay :D",
+                    "quote": "da peece! ;)",
+                    "quoteBy": "AnthyG",
+                    "date_published": 1500831891906,
+                    "body": "# Yeah, look at my shiny new ZeroBlog on the ZeroNet!\n### I mean, isn't this Blog a beauty?!\n> And checkout this cool quote!! :D \n\nIt \"even\" supports Markdown!!\n_**NOICE**_ :)\n`BLABLABLA`"
+                }],
+                pPostList: []
+            },
+            methods: {
+                markPost: function(body) {
+                    return (marked(body)
+                            .replace(
+                                /<blockquote>\n<p>([^.]*?)?(?=<\/p>\n<\/blockquote>)(?:<\/p>\n<\/blockquote>)?/gmi,
+                                function(m, c) {
+                                    var str = '</div></section><section class="quote"><blockquote>' + c + '</blockquote></section><section><div class="container">'
+
+                                    return str
+                                }
+                            )
+                            .replace(
+                                /(<section> <\/section>|<section class="quote"><blockquote><\/blockquote><\/section>)/gmi,
+                                ''
+                            )
+                        )
+                        .replace(
+                            /<p>/gmi,
+                            '<p class="hide ah">'
+                        )
+                },
+                loadBlog: function(qs, type) {
+                    console.log("Loading blog..", qs, type)
+                    if (qs > -1) {
+                        this.pPostList = this.postList.filter(function(post) {
+                            return post.post_id === qs
+                        })
+                    } else {
+                        qs = ""
+                        this.pPostList = this.postList
+                    }
+                    ownLink(qs)
+                    return false
+                }
+            }
+        })
+
+        $(document).ready(function() {
+            app.hide_app = false
+            app.pPostList = app.postList
+
+            $(window).scroll(function() {
+                $('.hide.ah').each(function(i) {
+                    var bottom_of_object = $(this).offset().top + $(this).outerHeight()
+                    var bottom_of_window = $(window).scrollTop() + $(window).height()
+                    if (bottom_of_window > bottom_of_object) {
+                        $(this).animate({
+                            'opacity': '1'
+                        }, 500)
+                    }
+                })
+            })
+        })
+    </script>
+
+</body>
+
+</html>

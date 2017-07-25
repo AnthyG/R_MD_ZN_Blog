@@ -149,17 +149,6 @@ var app = new Vue({
     }
 })
 
-// var app2 = new Vue({
-//     el: '#listtest',
-//     data: {
-//         parentMessage: 'Parent',
-//         items: [
-//             { m1: "a", m2: 1 },
-//             { m1: "b", m2: 2 }
-//         ]
-//     }
-// })
-
 
 
 var pages = {
@@ -261,7 +250,10 @@ function loadFooter(reload) {
 }
 
 var loadPostTags = function(i, uh, reload) {
-    console.log("Loading tags for post", i, uh, reload)
+    console.log("Loading tags for post", i, uh, !reload,
+        app.tagList.length > 0, typeof app.tagList[i] !== "undefined",
+        app.tagList[i], JSON.parse(JSON.stringify(app.tagList)))
+
     var genIt = function(tagList, CF) {
         console.log("gen", tagList, CF)
 
@@ -279,7 +271,6 @@ var loadPostTags = function(i, uh, reload) {
         $tr.replaceWith(n_el)
     }
 
-    console.log(app.tagList.length > 0, typeof app.tagList[i] !== "undefined", app.tagList[i], !reload, JSON.parse(JSON.stringify(app.tagList)))
     if (app.tagList.length > 0 && typeof app.tagList[i] !== "undefined" && !reload)
         genIt(app.tagList[i], 0)
     else
@@ -349,38 +340,7 @@ function loadBlog(qs, loadType, reload) {
                 var bodyMD = post.body
                 var body = ''
 
-                var uh = Math.random().toString(36).substring(7);
-
-                var firstreplace = true
-                body = '<div class="container"><h1 class="title">' + post.title + '</h1>' +
-                    '<div class="byline"><div class="avatar"></div>by <span>AnthyG</span></div>' +
-                    '<div id="TAGREPLACE_' + uh + '"></div>' +
-                    (marked(bodyMD)
-                        // .replace(
-                        //     /<SEC>([^.]*?)?(?=<\/SEC>)(?:<\/SEC>)?/gmi,
-                        //     function(m, c) {
-                        //         var str = marked(c) + '</div></section><section>'
-                        //         if (firstreplace) {
-                        //             firstreplace = false
-                        //         } else {
-                        //             str = '</section><section><div class="container">' + str
-                        //         }
-
-                        //         return str
-                        //     }
-                        // )
-                        // .replace(
-                        //     /<QUOTE>([^.]*?)?(?=<\/QUOTE>)(?:<\/QUOTE>)?/gmi,
-                        //     function(m, c) {
-                        //         var str = '</section><section class="quote"><blockquote>' + c + '</blockquote></section><section>'
-
-                        //         return str
-                        //     }
-                        // )
-                        // .replace(
-                        //     /<P>([^.]*?)?(?=<\/P>)(?:<\/P>)?/gmi,
-                        //     '<p class="hide ah">$1</p>'
-                        // )
+                bodyMD = (marked(bodyMD)
                         .replace(
                             /<blockquote>\n<p>([^.]*?)?(?=<\/p>\n<\/blockquote>)(?:<\/p>\n<\/blockquote>)?/gmi,
                             function(m, c) {
@@ -399,10 +359,17 @@ function loadBlog(qs, loadType, reload) {
                         '<p class="hide ah">'
                     )
 
+                var uh = Math.random().toString(36).substring(7);
+
+                body = '<div class="container"><h1 class="title">' + post.title + '</h1>' +
+                    '<div class="byline"><div class="avatar"></div>by <span>AnthyG</span></div>' +
+                    '<div id="TAGREPLACE_' + uh + '"></div>' + bodyMD
+
                 // body = body.substr('</section><section><div class="container">'.length, body.length)
                 body = body /*.substr(0, body.length - '<section>'.length)*/ + '</div>'
 
                 ownLink("?P:" + qs)
+
                 app.quote = post.quote
                 app.quoteBy = post.quoteBy
                 app.hide_quote = false
@@ -410,7 +377,9 @@ function loadBlog(qs, loadType, reload) {
                 app.hide_date = false
                 app.collapse_header = false
                 app.main = default_main1 + body + default_main2
-                loadPostTags(qs, uh, reload)
+
+                console.log(post.post_id, uh)
+                loadPostTags(post.post_id, uh, reload)
             }
 
             // console.log(typeof app.postList[qs])
@@ -440,10 +409,7 @@ function loadBlog(qs, loadType, reload) {
 
                     var body = post.body
 
-                    body = (marked(body
-                                // .match(/<SEC>([^.]*?)?(?=<\/SEC>)(?:<\/SEC>)?/gmi)[0]
-                                // .replace(/<SEC>|<\/SEC>|#/gmi, '') + ' **[...]**'
-                            )
+                    body = (marked(body)
                             .replace(
                                 /<blockquote>\n<p>([^.]*?)?(?=<\/p>\n<\/blockquote>)(?:<\/p>\n<\/blockquote>)?/gmi,
                                 function(m, c) {
@@ -476,6 +442,7 @@ function loadBlog(qs, loadType, reload) {
                 }
 
                 ownLink("?T:" + qs)
+
                 app.quote = qs
                 app.quoteBy = 'A Tag'
                 app.hide_quote = false
@@ -534,6 +501,7 @@ function loadBlog(qs, loadType, reload) {
 
                     var uh = Math.random().toString(36).substring(7);
                     loadPostTagsList[post.post_id] = uh
+                    console.log(post.post_id, loadPostTagsList[post.post_id], uh)
 
                     pLHTML += (i > 0 ? '<hr><section>' : '') + // class="preview"
                         '<div class="container"><h2><a class="first after" href="?P:' + post.post_id + '" onclick="return loadBlog(' + post.post_id + ', 0);">' + post.title + '</a></h2><h5>' +
@@ -549,6 +517,7 @@ function loadBlog(qs, loadType, reload) {
                 }
 
                 ownLink("")
+
                 app.quote = app.defaults.description
                 app.quoteBy = app.defaults.author
                 app.hide_quote = false
