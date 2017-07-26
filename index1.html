@@ -30,7 +30,7 @@
         <header v-bind:class="{'collapsed' : collapse_header }">
             <div class="container">
                 <nav>
-                    <a class="logo" href="?" onclick="return app.loadBlog(-1);">
+                    <a class="logo" href="?" onclick="return loadBlog(null, false, true);">
                         <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
                             <circle class="st0" cx="25" cy="25" r="25"/>
                             <g>
@@ -51,38 +51,11 @@
             </div>
         </header>
 
-        <sections id="main">
-            <div v-for="(post, index) in pPostList">
-                <hr v-if="index > 0">
-                <section>
-                    <div v-if="index === 0" class="scroll"><i class="material-icons">arrow_downward</i></div>
-                    <div class="container">
-                        <h2 v-if="!singlePost">
-                            <a class="first after" v-bind:href="'?P:' + post.post_id" v-bind:onclick="'return app.loadBlog(' + post.post_id + ', 0);'">{{ post.title }}</a>
-                        </h2>
-                        <h1 v-else class="title">{{ post.title }}</h1>
-
-                        <h5 v-if="!singlePost">{{ moment(post.date_published, "x").format("MMMM Do, YYYY") }}</h5>
-                        <div v-else class="byline">
-                            <div class="avatar"></div>
-                            by <span>AnthyG</span>
-                        </div>
-
-                        <ul class="tags">
-                            <li class="tag">Tags</li>
-                            <li v-for="(tag, index2) in printTags(post.post_id)">
-                                <a v-bind:href="'?T:' + tag.value" v-bind:onclick="'return app.loadBlog(\'' + tag.value + '\', 2);'">{{ tag.value }}</a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div v-html="markPost(post.body)"></div>
-                </section>
-            </div>
+        <sections v-html="main">
         </sections>
 
         <footer class="footer">
-            <a class="footer-logo" href="?" onclick="return app.loadBlog(-1);">
+            <a class="footer-logo" href="?" onclick="return loadBlog(null, false, true);">
                 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
                     <circle class="st0" cx="25" cy="25" r="25"/>
                     <g>
@@ -90,17 +63,14 @@
                     </g>
                 </svg>
             </a>
-            <div class="footer-links">
-                <ul v-for="(fPart, index) in footer">
-                    <li v-html="markFooter(fPart)"></li>
-                </ul>
+            <div class="footer-links" v-html="footer">
             </div>
 
             <div class="disclaimer">
                 <p>Copyright &copy;
                     <script>
                         document.write(new Date().getFullYear());
-                    </script> &nbsp;&nbsp;|&nbsp;&nbsp; <span v-html="markDefault('copyright')"></span></p>
+                    </script> &nbsp;&nbsp;|&nbsp;&nbsp; <span v-html="defaults.copyright"></span></p>
             </div>
         </footer>
     </div>
@@ -108,7 +78,6 @@
     <div class="menu template">
         <a href="#" class="menu-item template">Template</a>
     </div>
-
     <script type="text/javascript" src="js/all.js"></script>
 
 </body>

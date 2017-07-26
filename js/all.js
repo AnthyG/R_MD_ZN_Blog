@@ -5261,7 +5261,7 @@ markedR2.link = function(href, title, text) {
         }
     }
 
-    return '<a href="?S:' + href + '" onclick="return loadBlog(\'' + href + '\', 1);" ' + (title ? ('title="' + title + '"') : '') + '>' + text + '</a>'
+    return '<a href="?S:' + href + '" onclick="return app.loadBlog(\'' + href + '\', 1);" ' + (title ? ('title="' + title + '"') : '') + '>' + text + '</a>'
 }
 
 
@@ -5292,10 +5292,6 @@ function getParameterByName(name, url) {
 
 
 
-var default_date = 'Created July 23, 2017'
-var default_main1 = '<section class="preview"><div class="scroll"><i class="material-icons">arrow_downward</i></div>',
-    default_main2 = '</section>'
-
 Vue.use(Buefy)
 
 var app = new Vue({
@@ -5308,96 +5304,74 @@ var app = new Vue({
         hide_app: true,
         hide_date: true,
         hide_quote: true,
-        main: '',
-        footer: '',
-        postList: [],
-        tagList: [],
-        tagPostList: {},
-        pageList: [],
-        footerList: [],
         defaults: {
-            copyright: ''
-        }
-    }
-})
-
-
-
-var pages = {
-    "About": function() {
-        console.log("Loading About-page")
-    }
-}
-
-
-
-function checkEditor() {
-    if (page.site_info.settings.own)
-        loadOwner()
-    return page.site_info.settings.own
-}
-
-function loadOwner() {
-
-}
-
-
-
-function showError(msg) {
-    ownLink("")
-    app.quote = "You can't get everything"
-    app.quoteBy = "somebody"
-    app.hide_quote = false
-    app.hide_date = true
-    app.date = ""
-    app.collapse_header = false
-    app.main = default_main1 + '<div class="container hide ah">' +
-        marked("# _ERROR_ \n " + msg) +
-        '</div>' + default_main2
-}
-
-function loadDefaults(reload) {
-    var reload = reload || false
-    console.log("Loading defaults..", reload)
-
-    var genIt = function(defaults) {
-        console.log(defaults)
-
-        for (var x in defaults) {
-            var y = defaults[x]
-
-            eval("app.defaults." + x + " = \"" + y + "\"")
-        }
-        // app.defaults.copyright = marked(defaults.copyright).replace(/<p>|<\/p>/gm, '')
-    }
-
-    if (app.defaults && JSON.stringify(app.defaults).length > '{"copyright":""}'.length && !reload)
-        genIt(app.defaults)
-    else
-        page.cmd("dbQuery", [
-            "SELECT key, value FROM json LEFT JOIN keyvalue USING (json_id) WHERE directory = '' AND file_name = 'data.json'"
-        ], (defaults) => {
-            var defaultsO = {}
-            for (var x in defaults) {
-                var y = defaults[x]
-                eval("defaultsO['" + y.key + "'] = marked(\"" + y.value + "\").replace(/<p>|<\\\/p>|\\n/gm, '')")
-            }
-            app.defaults = defaultsO
-            genIt(defaultsO)
-        })
-}
-
-function loadFooter(reload) {
-    var reload = reload || false
-    console.log("Loading footer..", reload)
-
-    var genIt = function(footerList) {
-        var fLHTML = ''
-        for (var i = 0; i < footerList.length; i++) {
-            var fPart = footerList[i]
-
+            author: "AnthyG",
+            copyright: "AnthyG _aka_ Glightstar",
+            created: 1500760800000,
+            description: "My very own Blog, to blog bloggy stuff",
+            modified: 0,
+            next_post_id: 3,
+            title: "Glightstar’s Blog"
+        },
+        singlePost: false,
+        footer: [{
+            "title": "Content",
+            "new_tab": false,
+            "links": "[About](About),[Contact](Contact),[Projects](Projects)"
+        }, {
+            "title": "Follow me :)",
+            "new_tab": true,
+            "links": "[ZeroMe](/Me.ZeroNetwork.bit/?Profile/1oranGeS2xsKZ4jVsu9SVttzgkYXu4k9v/14K7EydgyeP84L1NKaAHBZTPQCev8BbqCy/),[GitHub](https://github.com/AnthyG)"
+        }],
+        postList: [{
+            "post_id": 2,
+            "title": "Markdown-Guide",
+            "quote": "Words are string",
+            "quoteBy": "A guy",
+            "date_published": 1500906320468,
+            "body": "This guide is from [Markdown-Here's Wiki-Page](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)\n\n\n```\n# H1\n## H2\n### H3\n#### H4\n##### H5\n###### H6\n\nAlternatively, for H1 and H2, an underline-ish style:\n\nAlt-H1\n======\n\nAlt-H2\n------\n```\n\n# H1\n## H2\n### H3\n#### H4\n##### H5\n###### H6\n\nAlternatively, for H1 and H2, an underline-ish style:\n\nAlt-H1\n======\n\nAlt-H2\n------\n\n\n\n```\nEmphasis, aka italics, with *asterisks* or _underscores_.\n\nStrong emphasis, aka bold, with **asterisks** or __underscores__.\n\nCombined emphasis with **asterisks and _underscores_**.\n\nStrikethrough uses two tildes. ~~Scratch this.~~\n```\n\nEmphasis, aka italics, with *asterisks* or _underscores_.\n\nStrong emphasis, aka bold, with **asterisks** or __underscores__.\n\nCombined emphasis with **asterisks and _underscores_**.\n\nStrikethrough uses two tildes. ~~Scratch this.~~\n\n\n\n```\n1. First ordered list item\n2. Another item\n⋅⋅* Unordered sub-list. \n1. Actual numbers don't matter, just that it's a number\n⋅⋅1. Ordered sub-list\n4. And another item.\n\n⋅⋅⋅You can have properly indented paragraphs within list items. Notice the blank line above, and the leading spaces (at least one, but we'll use three here to also align the raw Markdown).\n\n⋅⋅⋅To have a line break without a paragraph, you will need to use two trailing spaces.⋅⋅\n⋅⋅⋅Note that this line is separate, but within the same paragraph.⋅⋅\n⋅⋅⋅(This is contrary to the typical GFM line break behaviour, where trailing spaces are not required.)\n\n* Unordered list can use asterisks\n- Or minuses\n+ Or pluses\n```\n\n1. First ordered list item\n2. Another item\n⋅⋅* Unordered sub-list. \n1. Actual numbers don't matter, just that it's a number\n⋅⋅1. Ordered sub-list\n4. And another item.\n\n⋅⋅⋅You can have properly indented paragraphs within list items. Notice the blank line above, and the leading spaces (at least one, but we'll use three here to also align the raw Markdown).\n\n⋅⋅⋅To have a line break without a paragraph, you will need to use two trailing spaces.⋅⋅\n⋅⋅⋅Note that this line is separate, but within the same paragraph.⋅⋅\n⋅⋅⋅(This is contrary to the typical GFM line break behaviour, where trailing spaces are not required.)\n\n* Unordered list can use asterisks\n- Or minuses\n+ Or pluses\n\n\n\n```\n[I'm an inline-style link](https://www.google.com)\n\n[I'm an inline-style link with title](https://www.google.com \"Google's Homepage\")\n\n[I'm a reference-style link][Arbitrary case-insensitive reference text]\n\n[I'm a relative reference to a repository file](../blob/master/LICENSE)\n\n[You can use numbers for reference-style link definitions][1]\n\nOr leave it empty and use the [link text itself].\n\nURLs and URLs in angle brackets will automatically get turned into links. \nhttp://www.example.com or <http://www.example.com> and sometimes \nexample.com (but not on Github, for example).\n\nSome text to show that the reference links can follow later.\n\n[arbitrary case-insensitive reference text]: https://www.mozilla.org\n[1]: http://slashdot.org\n[link text itself]: http://www.reddit.com\n```\n\n[I'm an inline-style link](https://www.google.com)\n\n[I'm an inline-style link with title](https://www.google.com \"Google's Homepage\")\n\n[I'm a reference-style link][Arbitrary case-insensitive reference text]\n\n[I'm a relative reference to a repository file](../blob/master/LICENSE)\n\n[You can use numbers for reference-style link definitions][1]\n\nOr leave it empty and use the [link text itself].\n\nURLs and URLs in angle brackets will automatically get turned into links. \nhttp://www.example.com or <http://www.example.com> and sometimes \nexample.com (but not on Github, for example).\n\nSome text to show that the reference links can follow later.\n\n[arbitrary case-insensitive reference text]: https://www.mozilla.org\n[1]: http://slashdot.org\n[link text itself]: http://www.reddit.com\n\n\n\n```\nHere's our logo (hover to see the title text):\n\nInline-style: \n![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png \"Logo Title Text 1\")\n\nReference-style: \n![alt text][logo]\n\n[logo]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png \"Logo Title Text 2\"\n```\n\nHere's our logo (hover to see the title text):\n\nInline-style: \n![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png \"Logo Title Text 1\")\n\nReference-style: \n![alt text][logo]\n\n[logo]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png \"Logo Title Text 2\"\n\n\n\n```\nInline `code` has `back-ticks around` it.\n\n```javascript\nvar s = \"JavaScript syntax highlighting\";\nalert(s);\n```\n \n```python\ns = \"Python syntax highlighting\"\nprint s\n```\n \n```\nNo language indicated, so no syntax highlighting. \nBut let's throw in a <b>tag</b>.\n```\n```\n\nInline `code` has `back-ticks around` it.\n\n```javascript\nvar s = \"JavaScript syntax highlighting\";\nalert(s);\n```\n \n```python\ns = \"Python syntax highlighting\"\nprint s\n```\n \n```\nNo language indicated, so no syntax highlighting. \nBut let's throw in a <b>tag</b>.\n```\n\n\n\n```\nColons can be used to align columns.\n\n| Tables        | Are           | Cool  |\n| ------------- |:-------------:| -----:|\n| col 3 is      | right-aligned | $1600 |\n| col 2 is      | centered      |   $12 |\n| zebra stripes | are neat      |    $1 |\n\nThere must be at least 3 dashes separating each header cell.\nThe outer pipes (|) are optional, and you don't need to make the \nraw Markdown line up prettily. You can also use inline Markdown.\n\nMarkdown | Less | Pretty\n--- | --- | ---\n*Still* | `renders` | **nicely**\n1 | 2 | 3\n```\n\nColons can be used to align columns.\n\n| Tables        | Are           | Cool  |\n| ------------- |:-------------:| -----:|\n| col 3 is      | right-aligned | $1600 |\n| col 2 is      | centered      |   $12 |\n| zebra stripes | are neat      |    $1 |\n\nThere must be at least 3 dashes separating each header cell.\nThe outer pipes (|) are optional, and you don't need to make the \nraw Markdown line up prettily. You can also use inline Markdown.\n\nMarkdown | Less | Pretty\n--- | --- | ---\n*Still* | `renders` | **nicely**\n1 | 2 | 3\n\n\n\n```\n> Blockquotes are very handy in email to emulate reply text.\n> This line is part of the same quote.\n\nQuote break.\n\n> This is a very long line that will still be quoted properly when it wraps. Oh boy let's keep writing to make sure this is long enough to actually wrap for everyone. Oh, you can *put* **Markdown** into a blockquote\n```\n\n> Blockquotes are very handy in email to emulate reply text.\n> This line is part of the same quote.\n\nQuote break.\n\n> This is a very long line that will still be quoted properly when it wraps. Oh boy let's keep writing to make sure this is long enough to actually wrap for everyone. Oh, you can *put* **Markdown** into a blockquote\n\n\n\n```\n<dl>\n  <dt>Definition list</dt>\n  <dd>Is something people use sometimes.</dd>\n\n  <dt>Markdown in HTML</dt>\n  <dd>Does *not* work **very** well. Use HTML <em>tags</em>.</dd>\n</dl>\n```\n\n<dl>\n  <dt>Definition list</dt>\n  <dd>Is something people use sometimes.</dd>\n\n  <dt>Markdown in HTML</dt>\n  <dd>Does *not* work **very** well. Use HTML <em>tags</em>.</dd>\n</dl>\n\n\n\n```\nThree or more...\n\n---\n\nHyphens\n\n***\n\nAsterisks\n\n___\n\nUnderscores\n```\n\nThree or more...\n\n---\n\nHyphens\n\n***\n\nAsterisks\n\n___\n\nUnderscores\n\n\n\n```\nHere's a line for us to start with.\n\nThis line is separated from the one above by two newlines, so it will be a *separate paragraph*.\n\nThis line is also a separate paragraph, but...\nThis line is only separated by a single newline, so it's a separate line in the *same paragraph*.\n```\n\nHere's a line for us to start with.\n\nThis line is separated from the one above by two newlines, so it will be a *separate paragraph*.\n\nThis line is also a separate paragraph, but...\nThis line is only separated by a single newline, so it's a separate line in the *same paragraph*."
+        }, {
+            "post_id": 1,
+            "title": "Testin some stuff",
+            "quote": "A quote",
+            "quoteBy": "I dunno",
+            "date_published": 1500906320468,
+            "body": "Hello :)"
+        }, {
+            "post_id": 0,
+            "title": "Yay :D",
+            "quote": "da peece! ;)",
+            "quoteBy": "AnthyG",
+            "date_published": 1500831891906,
+            "body": "# Yeah, look at my shiny new ZeroBlog on the ZeroNet!\n### I mean, isn't this Blog a beauty?!\n> And checkout this cool quote!! :D \n\nIt \"even\" supports Markdown!!\n_**NOICE**_ :)\n`BLABLABLA`"
+        }],
+        pPostList: [],
+        tagList: [{
+            json_id: 1,
+            post_id: 0,
+            value: "Hello :)"
+        }, {
+            json_id: 1,
+            post_id: 0,
+            value: "1. Day"
+        }, {
+            json_id: 1,
+            post_id: 1,
+            value: "1. Day"
+        }, {
+            json_id: 1,
+            post_id: 1,
+            value: "Idunno"
+        }]
+    },
+    methods: {
+        markDefault: function(d) {
+            var e = eval('marked(this.defaults[d])')
+            var e2 = e.substr(3, e.length - 8)
+            return e2
+        },
+        markFooter: function(fPart) {
             var links = fPart.links.split(',').join('\n- ')
-
             var opts = {
                 renderer: markedR2
             }
@@ -5405,324 +5379,106 @@ function loadFooter(reload) {
                 opts = {
                     renderer: markedR
                 }
-            fLHTML += marked('- ### ' + fPart.title + '\n' + links, opts)
-        }
-        app.footer = fLHTML
-    }
+            return marked('- ### ' + fPart.title + '\n' + links, opts)
+                .replace(/<ul>|<\/ul>/gmi, '')
+        },
+        markPost: function(body) {
+            return '<section class="asection"><div class="container">' + (marked(body)
+                    .replace(
+                        /<blockquote>\n<p>([^.]*?)?(?=<\/p>\n<\/blockquote>)(?:<\/p>\n<\/blockquote>)?/gmi,
+                        function(m, c) {
+                            var str = '</div></section><section class="quote"><blockquote>' + c + '</blockquote></section><section class="asection"><div class="container">'
 
-    if (app.footerList.length > 0 && !reload)
-        genIt(app.footerList)
-    else
-        page.cmd("dbQuery", [
-            "SELECT * FROM footer"
-        ], (footerList) => {
-            app.footerList = footerList
-            genIt(footerList)
-        })
-}
-
-var loadPostTags = function(i, uh, reload) {
-    console.log("Loading tags for post", i, uh, !reload,
-        app.tagList.length > 0, typeof app.tagList[i] !== "undefined",
-        app.tagList[i], JSON.parse(JSON.stringify(app.tagList)))
-
-    var genIt = function(tagList, CF) {
-        console.log("gen", tagList, CF)
-
-        var tLHTML = '<ul class="tags"><li class="tag">Tags</li>'
-        for (var x = 0; x < tagList.length; x++) {
-            var y = tagList[x]
-            tLHTML += '<li><a href="?T:' + y.value + '" onclick="return loadBlog(\'' + y.value + '\', 2);">' + y.value + '</a></li>'
-        }
-        tLHTML += '</ul>'
-
-        var n_el = $(tLHTML)
-
-        $tr = $('#TAGREPLACE_' + uh)
-        console.log($tr, n_el)
-        $tr.replaceWith(n_el)
-    }
-
-    if (app.tagList.length > 0 && typeof app.tagList[i] !== "undefined" && !reload)
-        genIt(app.tagList[i], 0)
-    else
-        page.cmd("dbQuery", [
-            "SELECT * FROM tag WHERE post_id = " + i
-        ], (tagList) => {
-            app.tagList[i] = tagList
-            genIt(tagList, 1)
-        })
-}
-
-function loadBlog(qs, loadType, reload) {
-    var reload = reload || false
-    console.log("LOADTYPE", loadType)
-    var loadType = (loadType >= 0 ? loadType : -1)
-
-    app.hide_app = true
-    app.collapse_header = true
-    app.hide_quote = true
-    app.quote = ''
-    app.quoteBy = ''
-    app.hide_date = true
-    app.date = ''
-    app.main = ''
-
-    setTimeout(function() {
-        console.log("Loading blog.. ", loadType, typeof qs, qs, !reload)
-
-        if (loadType === 1 && typeof qs === "string" && qs !== "") {
-            var genIt = function(page) {
-                // console.log(page)
-
-                var body = marked(page.body, {
-                    renderer: markedR
-                })
-
-                ownLink("?S:" + qs)
-                app.collapse_header = true
-                app.hide_quote = true
-                app.quote = ''
-                app.quoteBy = ''
-                app.hide_date = true
-                app.date = ''
-                app.main = default_main1 + '<div class="container"><h1 class="title">' +
-                    page.title + '</h1>' + body + '</div>' + default_main2
-            }
-
-            if (app.pageList.length > 0 && typeof app.pageList[qs] !== "undefined" && !reload)
-                genIt(app.pageList[qs])
-            else
-                page.cmd("dbQuery", [
-                    "SELECT * FROM page WHERE title = '" + qs + "'"
-                ], (page) => {
-                    // console.log(page)
-                    if (page && typeof page[0] !== "undefined") {
-                        page = page[0]
-                        app.pageList[qs] = page
-                        genIt(page)
-                    } else {
-                        showError('**This _page_ does _not_ exist**')
-                    }
-                })
-        } else if (loadType === 0 && typeof qs === "number" && qs >= 0) {
-            var genIt = function(post) {
-                // console.log(post)
-
-                var bodyMD = post.body
-                var body = ''
-
-                bodyMD = (marked(bodyMD)
-                        .replace(
-                            /<blockquote>\n<p>([^.]*?)?(?=<\/p>\n<\/blockquote>)(?:<\/p>\n<\/blockquote>)?/gmi,
-                            function(m, c) {
-                                var str = '</div></section><section class="quote"><blockquote>' + c + '</blockquote></section><section><div class="container">'
-
-                                return str
-                            }
-                        )
-                        .replace(
-                            /(<section> <\/section>|<section class="quote"><blockquote><\/blockquote><\/section>)/gmi,
-                            ''
-                        )
+                            return str
+                        }
                     )
                     .replace(
-                        /<p>/gmi,
-                        '<p class="hide ah">'
+                        /(<section> <\/section>|<section class="quote"><blockquote><\/blockquote><\/section>)/gmi,
+                        ''
                     )
+                )
+                .replace(
+                    /<p>/gmi,
+                    '<p class="hide ah">'
+                )
+        },
+        printTags: function(post_id) {
+            return this.tagList.filter(function(tag_item) {
+                return tag_item.post_id === post_id
+            })
+        },
+        loadBlog: function(qs, loadType) {
+            this.hide_app = true
+            this.collapse_header = true
+            this.hide_quote = true
+            this.quote = ''
+            this.quoteBy = ''
+            this.hide_date = true
+            this.date = ''
 
-                var uh = Math.random().toString(36).substring(7);
+            setTimeout(function() {
+                console.log("Loading blog..", qs, loadType)
+                if (loadType === 1 && typeof qs === "string" && qs !== "") {
+                    app.collapse_header = true
+                    app.hide_quote = true
+                    app.quote = ''
+                    app.quoteBy = ''
+                    app.hide_date = true
+                    app.date = ''
+                } else if (loadType === 0 && typeof qs === "number" && qs >= -1) {
+                    app.singlePost = true
 
-                body = '<div class="container"><h1 class="title">' + post.title + '</h1>' +
-                    '<div class="byline"><div class="avatar"></div>by <span>AnthyG</span></div>' +
-                    '<div id="TAGREPLACE_' + uh + '"></div>' + bodyMD
+                    var post = app.postList[app.postList.length - 1 - qs]
+                    app.pPostList = [post]
 
-                // body = body.substr('</section><section><div class="container">'.length, body.length)
-                body = body /*.substr(0, body.length - '<section>'.length)*/ + '</div>'
+                    app.quote = post.quote
+                    app.quoteBy = post.quoteBy
+                    app.hide_quote = false
+                    app.date = moment(post.date_published, "x").format("MMMM Do, YYYY")
+                    app.hide_date = false
+                    app.collapse_header = false
+                } else if (loadType === 2 && typeof qs === "string" && qs !== "") {
+                    app.singlePost = false
 
-                ownLink("?P:" + qs)
+                    var filter_tagList = app.tagList.filter(function(tag_item) {
+                        return tag_item.value === qs
+                    })
 
-                app.quote = post.quote
-                app.quoteBy = post.quoteBy
-                app.hide_quote = false
-                app.date = moment(post.date_published, "x").format("MMMM Do, YYYY")
-                app.hide_date = false
-                app.collapse_header = false
-                app.main = default_main1 + body + default_main2
-
-                console.log(post.post_id, uh)
-                loadPostTags(post.post_id, uh, reload)
-            }
-
-            // console.log(typeof app.postList[qs])
-            if (app.postList.length > 0 && typeof app.postList[app.postList.length - 1 - qs] !== "undefined" && !reload)
-                genIt(app.postList[app.postList.length - 1 - qs])
-            else
-                page.cmd("dbQuery", [
-                    "SELECT * FROM post WHERE post_id = " + qs
-                ], (post) => {
-                    // console.log("fetched post", post)
-                    if (post && typeof post[0] !== "undefined") {
-                        post = post[0]
-                        app.postList[qs] = post
-                        genIt(post)
-                    } else {
-                        showError('**This _post_ does _not_ exist**')
+                    app.pPostList = []
+                    for (var x = 0; x < filter_tagList.length; x++) {
+                        var y = filter_tagList[x]
+                        app.pPostList.unshift(app.postList[app.postList.length - 1 - y.post_id])
                     }
-                })
-        } else if (loadType === 2 && typeof qs === "string" && qs !== "") {
-            var genIt = function(tagPostList) {
-                console.log(tagPostList)
 
-                var pLHTML = ''
-                var loadPostTagsList = {}
-                for (var i = 0; i < tagPostList.length; i++) {
-                    var post = tagPostList[i]
+                    app.quote = qs
+                    app.quoteBy = 'A Tag'
+                    app.hide_quote = false
+                    app.hide_date = true
+                    app.date = ''
+                    app.collapse_header = false
+                } else {
+                    app.singlePost = false
 
-                    var body = post.body
+                    qs = ""
+                    app.pPostList = app.postList
 
-                    body = (marked(body)
-                            .replace(
-                                /<blockquote>\n<p>([^.]*?)?(?=<\/p>\n<\/blockquote>)(?:<\/p>\n<\/blockquote>)?/gmi,
-                                function(m, c) {
-                                    var str = '</div></section><section class="quote"><blockquote>' + c + '</blockquote></section><section><div class="container">'
-
-                                    return str
-                                }
-                            )
-                            .replace(
-                                /(<section> <\/section>|<section class="quote"><blockquote><\/blockquote><\/section>)/gmi,
-                                ''
-                            )
-                        )
-                        .replace(
-                            /<p>/gmi,
-                            '<p class="hide ah">'
-                        )
-
-                    var uh = Math.random().toString(36).substring(7)
-                    loadPostTagsList[post.post_id] = uh
-                    console.log(post.post_id, loadPostTagsList[post.post_id], uh)
-
-                    pLHTML += (i > 0 ? '<hr><section>' : '') + // class="preview"
-                        '<div class="container"><h2><a class="first after" href="?P:' + post.post_id + '" onclick="return loadBlog(' + post.post_id + ', 0);">' + post.title + '</a></h2><h5>' +
-                        moment(post.date_published, "x").format("MMMM Do, YYYY") + '</h5>' +
-                        '<div id="TAGREPLACE_' + uh + '"></div>' +
-                        body +
-                        // '<a class="first before after" href="?P:' + post.post_id + '" onclick="return loadBlog(' + post.post_id + ', 0);"><b>Read more</b></a>' +
-                        '</div>' + (i >= 0 ? '</section>' : '')
+                    app.quote = app.defaults.description
+                    app.quoteBy = app.defaults.author
+                    app.hide_quote = false
+                    app.date = "Created " + moment(app.defaults.created, "x").format("MMMM Do, YYYY")
+                    app.hide_date = false
+                    app.collapse_header = false
                 }
 
-                ownLink("?T:" + qs)
+                ownLink(qs ? ('?' + (loadType === 0 ? 'P' : (loadType === 1 ? 'S' : (loadType === 2 ? 'T' : ''))) + ':' + qs) : '?')
+            }, 0)
 
-                app.quote = qs
-                app.quoteBy = 'A Tag'
-                app.hide_quote = false
-                app.hide_date = true
-                app.date = ''
-                app.collapse_header = false
-                app.main = default_main1 + pLHTML + default_main2
-
-                console.log(loadPostTagsList)
-                for (var i in loadPostTagsList) {
-                    loadPostTags(i, loadPostTagsList[i], reload)
-                }
-            }
-
-            if (app.tagPostList.hasOwnProperty(qs) && !reload)
-                genIt(app.tagPostList[qs])
-            else
-                page.cmd("dbQuery", [
-                    "SELECT * FROM post LEFT JOIN tag USING (post_id) WHERE value = '" + qs + "' ORDER BY date_published DESC"
-                ], (tagPostList) => {
-                    app.tagPostList[qs] = tagPostList
-                    genIt(tagPostList)
-                })
-        } else {
-            var genIt = function(postList) {
-                console.log(postList)
-
-                var pLHTML = ''
-                var loadPostTagsList = {}
-                for (var i = 0; i < postList.length; i++) {
-                    var post = postList[i]
-
-                    var body = post.body
-
-                    body = (marked(body
-                                // .match(/<SEC>([^.]*?)?(?=<\/SEC>)(?:<\/SEC>)?/gmi)[0]
-                                // .replace(/<SEC>|<\/SEC>|#/gmi, '') + ' **[...]**'
-                            )
-                            .replace(
-                                /<blockquote>\n<p>([^.]*?)?(?=<\/p>\n<\/blockquote>)(?:<\/p>\n<\/blockquote>)?/gmi,
-                                function(m, c) {
-                                    var str = '</div></section><section class="quote"><blockquote>' + c + '</blockquote></section><section><div class="container">'
-
-                                    return str
-                                }
-                            )
-                            .replace(
-                                /(<section> <\/section>|<section class="quote"><blockquote><\/blockquote><\/section>)/gmi,
-                                ''
-                            )
-                        )
-                        .replace(
-                            /<p>/gmi,
-                            '<p class="hide ah">'
-                        )
-
-                    var uh = Math.random().toString(36).substring(7);
-                    loadPostTagsList[post.post_id] = uh
-                    console.log(post.post_id, loadPostTagsList[post.post_id], uh)
-
-                    pLHTML += (i > 0 ? '<hr><section>' : '') + // class="preview"
-                        '<div class="container"><h2><a class="first after" href="?P:' + post.post_id + '" onclick="return loadBlog(' + post.post_id + ', 0);">' + post.title + '</a></h2><h5>' +
-                        moment(post.date_published, "x").format("MMMM Do, YYYY") + '</h5>' +
-                        '<div id="TAGREPLACE_' + uh + '"></div>' +
-                        body +
-                        // '<a class="first before after" href="?P:' + post.post_id + '" onclick="return loadBlog(' + post.post_id + ', 0);"><b>Read more</b></a>' +
-                        '</div>' + (i >= 0 ? '</section>' : '')
-
-                    // pLHTML += '<section>' + marked(body, {
-                    //     renderer: markedR
-                    // }) + '</section>'
-                }
-
-                ownLink("")
-
-                app.quote = app.defaults.description
-                app.quoteBy = app.defaults.author
-                app.hide_quote = false
-                app.date = default_date
-                app.hide_date = false
-                app.collapse_header = false
-                app.main = default_main1 + pLHTML + default_main2
-
-                console.log(loadPostTagsList)
-                for (var i in loadPostTagsList) {
-                    loadPostTags(i, loadPostTagsList[i], reload)
-                }
-            }
-
-            // console.log(app.postList.length > 0, !reload)
-            if (app.postList.length > 0 && !reload)
-                genIt(app.postList)
-            else
-                page.cmd("dbQuery", [
-                    "SELECT * FROM post ORDER BY date_published DESC"
-                ], (postList) => {
-                    app.postList = postList
-                    genIt(postList)
-                })
+            return false
         }
-    }, 1)
-
-    return false
-}
+    }
+})
 
 
-
-var follow;
 class Page extends ZeroFrame {
     onRequest(cmd, message) {
         if (cmd == "setSiteInfo") {
@@ -5750,11 +5506,7 @@ class Page extends ZeroFrame {
             page.cmd("serverInfo", [], (res) => {
                 page.server_info = res
             })
-
-            page.initFollowButton()
         })
-
-        loadDefaults()
 
         var qs,
             qs0 = getParameterByName('P'),
@@ -5776,44 +5528,15 @@ class Page extends ZeroFrame {
 
         console.log(qs, qs0, qs1, qs2, loadType)
 
-        loadBlog(qs, loadType)
-        loadFooter()
-    }
-
-    initFollowButton() {
-        follow = new Follow($("#subscribe_btn"))
-        follow.addFeed("Posts",
-            "SELECT post_id AS event_uri, 'post' AS type, date_published AS date_added, title AS title, body AS body, '?P:' || post_id AS url FROM post",
-            false
-        )
-        if (page.site_info.cert_user_id) {
-            var username = page.site_info.cert_user_id.replace(/@.*/, "")
-            follow.addFeed("Username mentions",
-                "SELECT 'mention' AS type, date_added, post.title AS title, keyvalue.value || ': ' || comment.body AS body, " +
-                "'?P:' || comment.post_id || '#Comments' AS url FROM comment LEFT JOIN json USING (json_id)" +
-                "LEFT JOIN json AS json_content ON (json_content.directory = json.directory AND json_content.file_name='content.json')" +
-                "LEFT JOIN keyvalue ON (keyvalue.json_id = json_content.json_id AND key = 'cert_user_id')" +
-                "LEFT JOIN post ON (comment.post_id = post.post_id) WHERE" +
-                "comment.body LIKE '%[" + username + "%' OR comment.body LIKE '%@" + username + "%'",
-                false
-            )
-        }
-        follow.addFeed("Comments",
-            "SELECT 'comment' AS type, date_added, post.title AS title, keyvalue.value || ': ' || comment.body AS body," +
-            "'?P:' || comment.post_id || '#Comments' AS url FROM comment LEFT JOIN json USING (json_id)" +
-            "LEFT JOIN json AS json_content ON (json_content.directory = json.directory AND json_content.file_name='content.json')" +
-            "LEFT JOIN keyvalue ON (keyvalue.json_id = json_content.json_id AND key = 'cert_user_id')" +
-            "LEFT JOIN post ON (comment.post_id = post.post_id)",
-            false
-        )
-        follow.init()
+        app.loadBlog(qs, loadType)
     }
 }
 page = new Page()
 
-
-
 $(document).ready(function() {
+    app.hide_app = false
+    app.pPostList = app.postList
+
     $(window).scroll(function() {
         $('.hide.ah').each(function(i) {
             var bottom_of_object = $(this).offset().top + $(this).outerHeight()

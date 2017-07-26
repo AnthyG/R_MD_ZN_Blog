@@ -16,7 +16,8 @@
                 "description",
                 "copyright",
                 "next_post_id",
-                "modified"
+                "modified",
+                "created"
             ]
         }
     },
