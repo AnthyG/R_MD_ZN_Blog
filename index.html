@@ -46,7 +46,9 @@
                     <span>&mdash; {{ quoteBy }}</span>
                 </blockquote>
                 <div class="date" v-bind:class="{'hide2' : hide_date }">
-                    <i class="material-icons prT-2">event</i> {{ date }}
+                    <i class="material-icons prT-2">event</i>
+                    <span v-if="!singlePost">Created {{ moment(defaults.created, "x").format("MMMM Do, YYYY") }}</span>
+                    <span v-else>{{ moment(pPostList[0].date_published, "x").format("MMMM Do, YYYY") }}</span>
                 </div>
             </div>
         </header>

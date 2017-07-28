@@ -5305,64 +5305,27 @@ var app = new Vue({
         hide_date: true,
         hide_quote: true,
         defaults: {
-            author: "AnthyG",
-            copyright: "AnthyG _aka_ Glightstar",
-            created: 1500760800000,
-            description: "My very own Blog, to blog bloggy stuff",
+            author: '',
+            copyright: '',
+            created: 0,
+            description: '',
             modified: 0,
-            next_post_id: 3,
-            title: "Glightstar’s Blog"
+            next_post_id: 0,
+            title: ''
+
+            // author: "AnthyG",
+            // copyright: "AnthyG _aka_ Glightstar",
+            // created: 1500760800000,
+            // description: "My very own Blog, to blog bloggy stuff",
+            // modified: 0,
+            // next_post_id: 3,
+            // title: "Glightstar’s Blog"
         },
         singlePost: false,
-        footer: [{
-            "title": "Content",
-            "new_tab": false,
-            "links": "[About](About),[Contact](Contact),[Projects](Projects)"
-        }, {
-            "title": "Follow me :)",
-            "new_tab": true,
-            "links": "[ZeroMe](/Me.ZeroNetwork.bit/?Profile/1oranGeS2xsKZ4jVsu9SVttzgkYXu4k9v/14K7EydgyeP84L1NKaAHBZTPQCev8BbqCy/),[GitHub](https://github.com/AnthyG)"
-        }],
-        postList: [{
-            "post_id": 2,
-            "title": "Markdown-Guide",
-            "quote": "Words are string",
-            "quoteBy": "A guy",
-            "date_published": 1500906320468,
-            "body": "This guide is from [Markdown-Here's Wiki-Page](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)\n\n\n```\n# H1\n## H2\n### H3\n#### H4\n##### H5\n###### H6\n\nAlternatively, for H1 and H2, an underline-ish style:\n\nAlt-H1\n======\n\nAlt-H2\n------\n```\n\n# H1\n## H2\n### H3\n#### H4\n##### H5\n###### H6\n\nAlternatively, for H1 and H2, an underline-ish style:\n\nAlt-H1\n======\n\nAlt-H2\n------\n\n\n\n```\nEmphasis, aka italics, with *asterisks* or _underscores_.\n\nStrong emphasis, aka bold, with **asterisks** or __underscores__.\n\nCombined emphasis with **asterisks and _underscores_**.\n\nStrikethrough uses two tildes. ~~Scratch this.~~\n```\n\nEmphasis, aka italics, with *asterisks* or _underscores_.\n\nStrong emphasis, aka bold, with **asterisks** or __underscores__.\n\nCombined emphasis with **asterisks and _underscores_**.\n\nStrikethrough uses two tildes. ~~Scratch this.~~\n\n\n\n```\n1. First ordered list item\n2. Another item\n⋅⋅* Unordered sub-list. \n1. Actual numbers don't matter, just that it's a number\n⋅⋅1. Ordered sub-list\n4. And another item.\n\n⋅⋅⋅You can have properly indented paragraphs within list items. Notice the blank line above, and the leading spaces (at least one, but we'll use three here to also align the raw Markdown).\n\n⋅⋅⋅To have a line break without a paragraph, you will need to use two trailing spaces.⋅⋅\n⋅⋅⋅Note that this line is separate, but within the same paragraph.⋅⋅\n⋅⋅⋅(This is contrary to the typical GFM line break behaviour, where trailing spaces are not required.)\n\n* Unordered list can use asterisks\n- Or minuses\n+ Or pluses\n```\n\n1. First ordered list item\n2. Another item\n⋅⋅* Unordered sub-list. \n1. Actual numbers don't matter, just that it's a number\n⋅⋅1. Ordered sub-list\n4. And another item.\n\n⋅⋅⋅You can have properly indented paragraphs within list items. Notice the blank line above, and the leading spaces (at least one, but we'll use three here to also align the raw Markdown).\n\n⋅⋅⋅To have a line break without a paragraph, you will need to use two trailing spaces.⋅⋅\n⋅⋅⋅Note that this line is separate, but within the same paragraph.⋅⋅\n⋅⋅⋅(This is contrary to the typical GFM line break behaviour, where trailing spaces are not required.)\n\n* Unordered list can use asterisks\n- Or minuses\n+ Or pluses\n\n\n\n```\n[I'm an inline-style link](https://www.google.com)\n\n[I'm an inline-style link with title](https://www.google.com \"Google's Homepage\")\n\n[I'm a reference-style link][Arbitrary case-insensitive reference text]\n\n[I'm a relative reference to a repository file](../blob/master/LICENSE)\n\n[You can use numbers for reference-style link definitions][1]\n\nOr leave it empty and use the [link text itself].\n\nURLs and URLs in angle brackets will automatically get turned into links. \nhttp://www.example.com or <http://www.example.com> and sometimes \nexample.com (but not on Github, for example).\n\nSome text to show that the reference links can follow later.\n\n[arbitrary case-insensitive reference text]: https://www.mozilla.org\n[1]: http://slashdot.org\n[link text itself]: http://www.reddit.com\n```\n\n[I'm an inline-style link](https://www.google.com)\n\n[I'm an inline-style link with title](https://www.google.com \"Google's Homepage\")\n\n[I'm a reference-style link][Arbitrary case-insensitive reference text]\n\n[I'm a relative reference to a repository file](../blob/master/LICENSE)\n\n[You can use numbers for reference-style link definitions][1]\n\nOr leave it empty and use the [link text itself].\n\nURLs and URLs in angle brackets will automatically get turned into links. \nhttp://www.example.com or <http://www.example.com> and sometimes \nexample.com (but not on Github, for example).\n\nSome text to show that the reference links can follow later.\n\n[arbitrary case-insensitive reference text]: https://www.mozilla.org\n[1]: http://slashdot.org\n[link text itself]: http://www.reddit.com\n\n\n\n```\nHere's our logo (hover to see the title text):\n\nInline-style: \n![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png \"Logo Title Text 1\")\n\nReference-style: \n![alt text][logo]\n\n[logo]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png \"Logo Title Text 2\"\n```\n\nHere's our logo (hover to see the title text):\n\nInline-style: \n![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png \"Logo Title Text 1\")\n\nReference-style: \n![alt text][logo]\n\n[logo]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png \"Logo Title Text 2\"\n\n\n\n```\nInline `code` has `back-ticks around` it.\n\n```javascript\nvar s = \"JavaScript syntax highlighting\";\nalert(s);\n```\n \n```python\ns = \"Python syntax highlighting\"\nprint s\n```\n \n```\nNo language indicated, so no syntax highlighting. \nBut let's throw in a <b>tag</b>.\n```\n```\n\nInline `code` has `back-ticks around` it.\n\n```javascript\nvar s = \"JavaScript syntax highlighting\";\nalert(s);\n```\n \n```python\ns = \"Python syntax highlighting\"\nprint s\n```\n \n```\nNo language indicated, so no syntax highlighting. \nBut let's throw in a <b>tag</b>.\n```\n\n\n\n```\nColons can be used to align columns.\n\n| Tables        | Are           | Cool  |\n| ------------- |:-------------:| -----:|\n| col 3 is      | right-aligned | $1600 |\n| col 2 is      | centered      |   $12 |\n| zebra stripes | are neat      |    $1 |\n\nThere must be at least 3 dashes separating each header cell.\nThe outer pipes (|) are optional, and you don't need to make the \nraw Markdown line up prettily. You can also use inline Markdown.\n\nMarkdown | Less | Pretty\n--- | --- | ---\n*Still* | `renders` | **nicely**\n1 | 2 | 3\n```\n\nColons can be used to align columns.\n\n| Tables        | Are           | Cool  |\n| ------------- |:-------------:| -----:|\n| col 3 is      | right-aligned | $1600 |\n| col 2 is      | centered      |   $12 |\n| zebra stripes | are neat      |    $1 |\n\nThere must be at least 3 dashes separating each header cell.\nThe outer pipes (|) are optional, and you don't need to make the \nraw Markdown line up prettily. You can also use inline Markdown.\n\nMarkdown | Less | Pretty\n--- | --- | ---\n*Still* | `renders` | **nicely**\n1 | 2 | 3\n\n\n\n```\n> Blockquotes are very handy in email to emulate reply text.\n> This line is part of the same quote.\n\nQuote break.\n\n> This is a very long line that will still be quoted properly when it wraps. Oh boy let's keep writing to make sure this is long enough to actually wrap for everyone. Oh, you can *put* **Markdown** into a blockquote\n```\n\n> Blockquotes are very handy in email to emulate reply text.\n> This line is part of the same quote.\n\nQuote break.\n\n> This is a very long line that will still be quoted properly when it wraps. Oh boy let's keep writing to make sure this is long enough to actually wrap for everyone. Oh, you can *put* **Markdown** into a blockquote\n\n\n\n```\n<dl>\n  <dt>Definition list</dt>\n  <dd>Is something people use sometimes.</dd>\n\n  <dt>Markdown in HTML</dt>\n  <dd>Does *not* work **very** well. Use HTML <em>tags</em>.</dd>\n</dl>\n```\n\n<dl>\n  <dt>Definition list</dt>\n  <dd>Is something people use sometimes.</dd>\n\n  <dt>Markdown in HTML</dt>\n  <dd>Does *not* work **very** well. Use HTML <em>tags</em>.</dd>\n</dl>\n\n\n\n```\nThree or more...\n\n---\n\nHyphens\n\n***\n\nAsterisks\n\n___\n\nUnderscores\n```\n\nThree or more...\n\n---\n\nHyphens\n\n***\n\nAsterisks\n\n___\n\nUnderscores\n\n\n\n```\nHere's a line for us to start with.\n\nThis line is separated from the one above by two newlines, so it will be a *separate paragraph*.\n\nThis line is also a separate paragraph, but...\nThis line is only separated by a single newline, so it's a separate line in the *same paragraph*.\n```\n\nHere's a line for us to start with.\n\nThis line is separated from the one above by two newlines, so it will be a *separate paragraph*.\n\nThis line is also a separate paragraph, but...\nThis line is only separated by a single newline, so it's a separate line in the *same paragraph*."
-        }, {
-            "post_id": 1,
-            "title": "Testin some stuff",
-            "quote": "A quote",
-            "quoteBy": "I dunno",
-            "date_published": 1500906320468,
-            "body": "Hello :)"
-        }, {
-            "post_id": 0,
-            "title": "Yay :D",
-            "quote": "da peece! ;)",
-            "quoteBy": "AnthyG",
-            "date_published": 1500831891906,
-            "body": "# Yeah, look at my shiny new ZeroBlog on the ZeroNet!\n### I mean, isn't this Blog a beauty?!\n> And checkout this cool quote!! :D \n\nIt \"even\" supports Markdown!!\n_**NOICE**_ :)\n`BLABLABLA`"
-        }],
-        pPostList: [],
-        tagList: [{
-            json_id: 1,
-            post_id: 0,
-            value: "Hello :)"
-        }, {
-            json_id: 1,
-            post_id: 0,
-            value: "1. Day"
-        }, {
-            json_id: 1,
-            post_id: 1,
-            value: "1. Day"
-        }, {
-            json_id: 1,
-            post_id: 1,
-            value: "Idunno"
-        }]
+        footer: [],
+        postList: [],
+        tagList: [],
+        pPostList: []
     },
     methods: {
         markDefault: function(d) {
@@ -5407,7 +5370,33 @@ var app = new Vue({
                 return tag_item.post_id === post_id
             })
         },
-        loadBlog: function(qs, loadType) {
+        loadDefaults: function() {
+            console.log("Loading defaults..")
+            page.cmd("dbQuery", [
+                "SELECT key, value FROM json LEFT JOIN keyvalue USING (json_id) WHERE directory = '' AND file_name = 'data.json'"
+            ], (defaults) => {
+                console.log("Defaults", defaults)
+
+                for (var x = 0; x < defaults.length; x++) {
+                    var y = defaults[x]
+
+                    app.defaults[y.key] = y.value
+                }
+            })
+        },
+        loadFooter: function() {
+            console.log("Loading footer..")
+
+            page.cmd("dbQuery", [
+                "SELECT * FROM footer"
+            ], (footer) => {
+                app.footer = footer
+            })
+        },
+        loadBlog: function(qs, loadType, reload) {
+            var reload = reload || false
+            var loadType = (loadType > -1 ? loadType : -1)
+
             this.hide_app = true
             this.collapse_header = true
             this.hide_quote = true
@@ -5417,60 +5406,135 @@ var app = new Vue({
             this.date = ''
 
             setTimeout(function() {
-                console.log("Loading blog..", qs, loadType)
+                console.log("Loading blog..", qs, loadType, reload)
+
+                var tL = -1
                 if (loadType === 1 && typeof qs === "string" && qs !== "") {
-                    app.collapse_header = true
-                    app.hide_quote = true
-                    app.quote = ''
-                    app.quoteBy = ''
-                    app.hide_date = true
-                    app.date = ''
+                    tL = 1
                 } else if (loadType === 0 && typeof qs === "number" && qs >= -1) {
-                    app.singlePost = true
-
-                    var post = app.postList[app.postList.length - 1 - qs]
-                    app.pPostList = [post]
-
-                    app.quote = post.quote
-                    app.quoteBy = post.quoteBy
-                    app.hide_quote = false
-                    app.date = moment(post.date_published, "x").format("MMMM Do, YYYY")
-                    app.hide_date = false
-                    app.collapse_header = false
+                    tL = 0
                 } else if (loadType === 2 && typeof qs === "string" && qs !== "") {
-                    app.singlePost = false
-
-                    var filter_tagList = app.tagList.filter(function(tag_item) {
-                        return tag_item.value === qs
-                    })
-
-                    app.pPostList = []
-                    for (var x = 0; x < filter_tagList.length; x++) {
-                        var y = filter_tagList[x]
-                        app.pPostList.unshift(app.postList[app.postList.length - 1 - y.post_id])
-                    }
-
-                    app.quote = qs
-                    app.quoteBy = 'A Tag'
-                    app.hide_quote = false
-                    app.hide_date = true
-                    app.date = ''
-                    app.collapse_header = false
-                } else {
-                    app.singlePost = false
-
-                    qs = ""
-                    app.pPostList = app.postList
-
-                    app.quote = app.defaults.description
-                    app.quoteBy = app.defaults.author
-                    app.hide_quote = false
-                    app.date = "Created " + moment(app.defaults.created, "x").format("MMMM Do, YYYY")
-                    app.hide_date = false
-                    app.collapse_header = false
+                    tL = 2
                 }
 
-                ownLink(qs ? ('?' + (loadType === 0 ? 'P' : (loadType === 1 ? 'S' : (loadType === 2 ? 'T' : ''))) + ':' + qs) : '?')
+                var genIt = function() {
+                    if (tL === 1) {
+                        app.collapse_header = true
+                        app.hide_quote = true
+                        app.quote = ''
+                        app.quoteBy = ''
+                        app.hide_date = true
+                        app.date = ''
+                    } else if (tL === 0) {
+                        app.singlePost = true
+
+                        var post = app.postList[app.postList.length - 1 - qs]
+                        app.pPostList = [post]
+
+                        app.quote = post.quote
+                        app.quoteBy = post.quoteBy
+                        app.hide_quote = false
+                            // app.date = moment(post.date_published, "x").format("MMMM Do, YYYY")
+                        app.hide_date = false
+                        app.collapse_header = false
+                    } else if (tL === 2) {
+                        app.singlePost = false
+
+                        var filter_tagList = app.tagList.filter(function(tag_item) {
+                            return tag_item.value === qs
+                        })
+
+                        app.pPostList = []
+                        for (var x = 0; x < filter_tagList.length; x++) {
+                            var y = filter_tagList[x]
+                            app.pPostList.unshift(app.postList[app.postList.length - 1 - y.post_id])
+                        }
+
+                        app.quote = qs
+                        app.quoteBy = 'A Tag'
+                        app.hide_quote = false
+                        app.hide_date = true
+                        app.date = ''
+                        app.collapse_header = false
+                    } else {
+                        app.singlePost = false
+
+                        qs = ""
+                        app.pPostList = app.postList
+
+                        app.quote = app.defaults.description
+                        app.quoteBy = app.defaults.author
+                        app.hide_quote = false
+                            // app.date = "Created " + moment(app.defaults.created, "x").format("MMMM Do, YYYY")
+                        app.hide_date = false
+                        app.collapse_header = false
+                    }
+
+                    ownLink(qs ? ('?' + (loadType === 0 ? 'P' : (loadType === 1 ? 'S' : (loadType === 2 ? 'T' : ''))) + ':' + qs) : '?')
+                }
+
+                var get_tagList = function(cb) {
+                    console.log("getting tagList", cb)
+                    page.cmd("dbQuery", [
+                        "SELECT * FROM tag"
+                    ], (tagList) => {
+                        app.tagList = tagList
+                        typeof cb === "function" ? cb(tagList) : genIt()
+                    })
+                }
+                var get_postList = function(cb) {
+                    console.log("getting postList", cb)
+                    page.cmd("dbQuery", [
+                        "SELECT * FROM post ORDER BY date_published DESC"
+                    ], (postList) => {
+                        app.postList = postList
+                        typeof cb === "function" ? cb(postList) : genIt()
+                    })
+                }
+                var get_post = function(cb) {
+                    console.log("getting post", cb)
+                    page.cmd("dbQuery", [
+                        "SELECT * FROM post WHERE post_id = " + qs
+                    ], (post) => {
+                        if (typeof post[0] !== "undefined") {
+                            app.postList[app.postList.length - 1 - qs] = post[0]
+                            typeof cb === "function" ? cb(post[0]) : genIt()
+                        } else
+                            showError('**This _post_ does _not_ exist**')
+                    })
+                }
+
+                function getStuff() {
+                    if (tL === 1) {
+                        // Get sub-page
+                    } else if (tL === 0) {
+                        // Get post
+                        if (app.postList.length > 0 && typeof app.postList[app.postList.length - 1 - qs] !== "undefined" && !reload)
+                            genIt()
+                        else
+                            get_post()
+
+                        // } else if (tL === 2) {
+                        //     // Get postList
+                        //     if (app.postList.length > 0 && !reload)
+                        //         genIt()
+                        //     else
+                        //         get_postList()
+                    } else {
+                        // Get postList
+                        if (app.postList.length > 0 && !reload)
+                            genIt()
+                        else
+                            get_postList()
+                    }
+                }
+
+                if (!app.tagList.length > 0)
+                    get_tagList(function() {
+                        getStuff()
+                    })
+                else
+                    getStuff()
             }, 0)
 
             return false
@@ -5479,6 +5543,8 @@ var app = new Vue({
 })
 
 
+
+var follow
 class Page extends ZeroFrame {
     onRequest(cmd, message) {
         if (cmd == "setSiteInfo") {
@@ -5506,6 +5572,8 @@ class Page extends ZeroFrame {
             page.cmd("serverInfo", [], (res) => {
                 page.server_info = res
             })
+
+            page.initFollowButton()
         })
 
         var qs,
@@ -5528,10 +5596,47 @@ class Page extends ZeroFrame {
 
         console.log(qs, qs0, qs1, qs2, loadType)
 
+        app.loadDefaults()
         app.loadBlog(qs, loadType)
+        app.loadFooter()
+    }
+
+    initFollowButton() {
+        follow = new Follow($("#subscribe_btn"))
+        follow.addFeed("Posts",
+            "SELECT post_id AS event_uri, 'post' AS type, date_published AS date_added, title AS title, body AS body, '?P:' || post_id AS url FROM post",
+            false
+        )
+        if (page.site_info.cert_user_id) {
+            var username = page.site_info.cert_user_id.replace(/@.*/, "")
+            follow.addFeed("Username mentions",
+                "SELECT 'mention' AS type, date_added, post.title AS title, keyvalue.value || ': ' || comment.body AS body, " +
+                "'?P:' || comment.post_id || '#Comments' AS url FROM comment LEFT JOIN json USING (json_id)" +
+                "LEFT JOIN json AS json_content ON (json_content.directory = json.directory AND json_content.file_name='content.json')" +
+                "LEFT JOIN keyvalue ON (keyvalue.json_id = json_content.json_id AND key = 'cert_user_id')" +
+                "LEFT JOIN post ON (comment.post_id = post.post_id) WHERE" +
+                "comment.body LIKE '%[" + username + "%' OR comment.body LIKE '%@" + username + "%'",
+                false
+            )
+        }
+        follow.addFeed("Comments",
+            "SELECT 'comment' AS type, date_added, post.title AS title, keyvalue.value || ': ' || comment.body AS body," +
+            "'?P:' || comment.post_id || '#Comments' AS url FROM comment LEFT JOIN json USING (json_id)" +
+            "LEFT JOIN json AS json_content ON (json_content.directory = json.directory AND json_content.file_name='content.json')" +
+            "LEFT JOIN keyvalue ON (keyvalue.json_id = json_content.json_id AND key = 'cert_user_id')" +
+            "LEFT JOIN post ON (comment.post_id = post.post_id)",
+            false
+        )
+        follow.init()
+    }
+
+    nMenu(el) {
+        return new Menu(el)
     }
 }
 page = new Page()
+
+
 
 $(document).ready(function() {
     app.hide_app = false
