@@ -5304,6 +5304,18 @@ var app = new Vue({
         hide_app: true,
         hide_date: true,
         hide_quote: true,
+        hide_postlist: true,
+
+        isOwner: false,
+
+        hide_editor: true,
+        editor_title: 'Title',
+        editor_quote: '',
+        editor_quoteBy: '',
+        editor_newtag: '',
+        editor_tags: [],
+        editor_cntnt: '',
+
         defaults: {
             author: '',
             copyright: '',
@@ -5345,7 +5357,8 @@ var app = new Vue({
             return marked('- ### ' + fPart.title + '\n' + links, opts)
                 .replace(/<ul>|<\/ul>/gmi, '')
         },
-        markPost: function(body) {
+        markPost: function(body, iniWOah) {
+            var iniWOah = iniWOah || false
             return '<section class="asection"><div class="container">' + (marked(body)
                     .replace(
                         /<blockquote>\n<p>([^.]*?)?(?=<\/p>\n<\/blockquote>)(?:<\/p>\n<\/blockquote>)?/gmi,
@@ -5362,7 +5375,7 @@ var app = new Vue({
                 )
                 .replace(
                     /<p>/gmi,
-                    '<p class="hide ah">'
+                    '<p class="' + (iniWOah ? '' : 'hide ah') + '">'
                 )
         },
         printTags: function(post_id) {
@@ -5397,6 +5410,7 @@ var app = new Vue({
             var reload = reload || false
             var loadType = (loadType > -1 ? loadType : -1)
 
+            this.hide_editor = true
             this.hide_app = true
             this.collapse_header = true
             this.hide_quote = true
@@ -5404,6 +5418,7 @@ var app = new Vue({
             this.quoteBy = ''
             this.hide_date = true
             this.date = ''
+            this.hide_postlist = false
 
             setTimeout(function() {
                 console.log("Loading blog..", qs, loadType, reload)
@@ -5538,6 +5553,185 @@ var app = new Vue({
             }, 0)
 
             return false
+        },
+        loadEditor: function(ep) {
+            if (!app.isOwner) {
+                // app.loadBlog(undefined, -1)
+                // return false
+            }
+
+            var ep = ep || null
+
+            this.hide_app = true
+            this.collapse_header = true
+            this.hide_quote = true
+            this.quote = ''
+            this.quoteBy = ''
+            this.hide_date = true
+            this.date = ''
+            this.hide_postlist = true
+
+            setTimeout(function() {
+                console.log("Loading editor..", ep)
+
+                app.hide_editor = false
+
+                ownLink(ep ? ('?E:' + ep) : '?E:New')
+            }, 0)
+
+            return false
+        },
+        editor: function() {
+            return {
+                save: function() {
+                    console.log("Saving editor content")
+
+                    var data_inner_path = "data/data.json"
+                    var content_inner_path = "content.json"
+
+                    page.cmd("fileGet", {
+                        "inner_path": data_inner_path,
+                        "required": false
+                    }, (data) => {
+                        if (data)
+                            var data = JSON.parse(data)
+                        else
+                            var data = {}
+
+                        if (!data.hasOwnProperty("author"))
+                            data.author = "Author"
+                        if (!data.hasOwnProperty("title"))
+                            data.title = "A Blog"
+                        if (!data.hasOwnProperty("description"))
+                            data.description = "A nice-looking blog"
+                        if (!data.hasOwnProperty("copyright"))
+                            data.copyright = "The Author"
+                        if (!data.hasOwnProperty("next_post_id"))
+                            data.next_post_id = 1
+                        if (!data.hasOwnProperty("modified"))
+                            data.modified = 0
+                        if (!data.hasOwnProperty("created"))
+                            data.created = 0
+                        if (!data.hasOwnProperty("footer"))
+                            data.footer = [{
+                                "title": "Content",
+                                "new_tab": false,
+                                "links": "[About](About),[Contact](Contact),[Projects](Projects)"
+                            }, {
+                                "title": "Follow me :)",
+                                "new_tab": true,
+                                "links": "[ZeroMe](/Me.ZeroNetwork.bit/?Profile/1oranGeS2xsKZ4jVsu9SVttzgkYXu4k9v/14K7EydgyeP84L1NKaAHBZTPQCev8BbqCy/),[GitHub](https://github.com/AnthyG)"
+                            }]
+                        if (!data.hasOwnProperty("page"))
+                            data.page = [{
+                                "title": "About",
+                                "md": true,
+                                "body": "This is my very own Blog!\n I don't quite know, what I can write about, but we will see, what will come x)"
+                            }, {
+                                "title": "Contact",
+                                "md": true,
+                                "body": "A list of ways, to get in touch with me:\n- [ZeroMe](/Me.ZeroNetwork.bit/?Profile/1oranGeS2xsKZ4jVsu9SVttzgkYXu4k9v/14K7EydgyeP84L1NKaAHBZTPQCev8BbqCy/)\n- [ZeroMail](/Mail.ZeroNetwork.bit/?to=glightstar@zeroid.bit)"
+                            }, {
+                                "title": "Projects",
+                                "md": true,
+                                "body": "Here are all the Projects I'm working on, each with a link to the Zite, and a link to the GitHub-Repository.\n- [ThunderWave](/thunderwave.bit) ([_GitHub_](https://github.com/AnthyG/ThunderWave))\n- [ThunderNote](/1PkvY7bXkmpns9h9b9spkjYpWu3eV6actD/) ([_GitHub_](https://github.com/AnthyG/ThunderNote))\n- [This Blog](/1MdwanV12uDDiVsgrsifDFdSsigLRD9dzu) ([_GitHub_](https://github.com/AnthyG/R_MD_ZN_Blog))\n"
+                            }]
+                        if (!data.hasOwnProperty("post"))
+                            data.post = [{
+                                "post_id": 0,
+                                "title": "Markdown-Guide",
+                                "quote": "Words are string",
+                                "quoteBy": "A guy",
+                                "date_published": 0,
+                                "body": "See the guide on \n> [Markdown-Here's Wiki-Page](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)"
+                            }]
+                        if (!data.hasOwnProperty("tag"))
+                            data.tag = [{
+                                "value": "Hello :)",
+                                "post_id": 0
+                            }]
+
+                        var tpid = data.next_post_id
+
+                        data.post.push({
+                            "post_id": tpid,
+                            "title": app.editor_title,
+                            "quote": app.editor_quote,
+                            "quoteBy": app.editor_quoteBy,
+                            "date_published": parseInt(moment().utc().format('x')),
+                            "body": app.editor_cntnt
+                        })
+
+                        data.next_post_id = data.post.length
+
+                        for (var tx = 0; tx < app.editor_tags.length; tx++) {
+                            var ty = app.editor_tags[tx]
+                            data.tag.push({
+                                "value": ty,
+                                "post_id": tpid
+                            })
+                        }
+
+                        app.editor_title = 'Title'
+                        app.editor_quote = ''
+                        app.editor_quoteBy = ''
+                        app.editor_newtag = ''
+                        app.editor_tags = []
+                        app.editor_cntnt = ''
+
+                        // Encode data array to utf8 json text
+                        var json_raw = unescape(encodeURIComponent(JSON.stringify(data, undefined, '\t')))
+                        var json_rawA = btoa(json_raw)
+
+                        // Write file to disk
+                        page.cmd("fileWrite", [
+                            data_inner_path,
+                            json_rawA
+                        ], (res) => {
+                            if (res == "ok") {
+                                page.cmd("siteSign", {
+                                    "inner_path": content_inner_path
+                                }, (res) => {
+                                    page.cmd("sitePublish", {
+                                        "inner_path": content_inner_path,
+                                        "sign": false
+                                    }, function() {
+                                        page.cmd("wrapperNotification", [
+                                            "done", "Your post has been successfully published! :)"
+                                        ])
+                                    })
+                                })
+                            } else {
+                                page.cmd("wrapperNotification", [
+                                    "error", "File write error: " + JSON.stringify(res)
+                                ])
+                            }
+                        })
+                    })
+
+                    return false
+                },
+                close: function() {
+                    console.log("Closing editor")
+
+                    // Go back, not load the post-list!!!!!!!
+                    app.loadBlog(-1)
+
+                    return false
+                },
+                empty: function() {
+                    console.log("Emptying editor contents")
+
+                    app.editor_title = 'Title'
+                    app.editor_quote = ''
+                    app.editor_quoteBy = ''
+                    app.editor_newtag = ''
+                    app.editor_tags = []
+                    app.editor_cntnt = ''
+
+                    return false
+                }
+            }
         }
     }
 })
@@ -5567,6 +5761,9 @@ class Page extends ZeroFrame {
     onOpenWebsocket() {
         this.cmd("siteInfo", [], function(site_info) {
             page.site_info = site_info
+
+            app.isOwner = page.site_info.settings.own
+
             page.setSiteInfo(site_info)
 
             page.cmd("serverInfo", [], (res) => {
@@ -5579,10 +5776,13 @@ class Page extends ZeroFrame {
         var qs,
             qs0 = getParameterByName('P'),
             qs1 = getParameterByName('S'),
-            qs2 = getParameterByName('T')
+            qs2 = getParameterByName('T'),
+            qs3 = getParameterByName('E')
         var loadType = 0
 
-        if (parseInt(qs0) >= 0)
+        if ( /*app.isOwner && */ typeof qs3 === "string" && qs3 !== "") {
+            loadType = 3
+        } else if (parseInt(qs0) >= 0)
             qs = parseInt(qs0)
         else if (typeof qs1 === "string" && qs1 !== "") {
             qs = qs1
@@ -5594,10 +5794,16 @@ class Page extends ZeroFrame {
             loadType = -1
         }
 
-        console.log(qs, qs0, qs1, qs2, loadType)
+        console.log(qs, qs0, qs1, qs2, qs3, loadType)
 
         app.loadDefaults()
-        app.loadBlog(qs, loadType)
+
+        if (loadType < 3) {
+            app.loadBlog(qs, loadType)
+        } else if (loadType === 3) {
+            app.loadEditor(qs3)
+        }
+
         app.loadFooter()
     }
 

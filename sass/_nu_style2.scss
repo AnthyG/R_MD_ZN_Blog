@@ -39,7 +39,7 @@ section h1.title {
 }
 
 section p {
-    font-family: 'Source Sans Pro', serif
+    font-family: 'Source Sans Pro', serif;
 }
 
 // section.preview p {
@@ -105,6 +105,7 @@ a.after:after {
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     position: absolute;
+    left: 0px;
 }
 
 a.before:before {
@@ -208,4 +209,139 @@ a.after:hover:after {
     margin-bottom: 3em;
     border-radius: 4px;
     box-shadow: 0 1.25rem 1rem -1.5rem rgba(43, 75, 82, 0.4), 0 0.5rem 1.75rem -0.25rem rgba(43, 75, 82, 0.2), 0 1.25rem 2.5rem rgba(43, 75, 82, 0.2)
+}
+
+.input {
+    border: 2px solid $color-p;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-family: 'Source Sans Pro', sans-serif;
+    &:hover {
+        border-color: darken($color-p, $prcnt1);
+    }
+    &:active,
+    &:focus {
+        border-color: darken($color-p, $prcnt2);
+    }
+}
+
+$btnclrs: (primary, $color-p),
+(primary2, $color-p2),
+(accent, $color-a);
+.btn {
+    margin: 4px;
+    color: $color-a;
+    cursor: pointer;
+    padding: 2px 6px;
+    user-select: none;
+    text-align: center;
+    border-radius: 4px;
+    border: 2px solid $color-p;
+    background: rgba(255, 255, 255, 0.5);
+    &:hover {
+        background: darken(rgba(255, 255, 255, 0.5), $prcnt1);
+    }
+    &:active,
+    &:focus {
+        background: darken(rgba(255, 255, 255, 0.5), $prcnt2);
+    }
+    @each $name,
+    $clr in $btnclrs {
+        &.btn-#{$name} {
+            color: $clr;
+            border-color: $clr;
+            &:hover {
+                border-color: darken($clr, $prcnt1);
+            }
+            &:active,
+            &:focus {
+                border-color: darken($clr, $prcnt2);
+            }
+        }
+    }
+}
+
+.btn.btn-solid {
+    color: white;
+    background: $color-p;
+    &:hover {
+        background: darken($color-p, $prcnt1);
+    }
+    &:active,
+    &:focus {
+        background: darken($color-p, $prcnt2);
+    }
+    @each $name,
+    $clr in $btnclrs {
+        &.btn-#{$name} {
+            background: $clr;
+            &:hover {
+                background: darken($clr, $prcnt1);
+            }
+            &:active,
+            &:focus {
+                background: darken($clr, $prcnt2);
+            }
+        }
+    }
+}
+
+.newpostbtn {
+    left: 4px;
+    margin: 0;
+    z-index: 99999;
+    position: absolute !important;
+    border-radius: 0px 0px 4px 4px;
+}
+
+#editor_inputcntnt {
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    width: 100%;
+    height: 30vh;
+    z-index: 9999;
+    background-color: rgba(255, 255, 255, 0.65);
+    border: none;
+    border-top: 2px $color-t solid;
+}
+
+#editor .editor_title {
+    display: block;
+    font-size: 2em;
+    -webkit-margin-before: 0.67em;
+    -webkit-margin-after: 0.67em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    font-weight: bold;
+    font-size: 1.5em;
+    -webkit-margin-before: 0.83em;
+    -webkit-margin-after: 0.83em;
+    margin: 0;
+    padding: 0;
+    color: #e91e63;
+    line-height: 1.5;
+    padding-left: 4px;
+    font-size: 2rem;
+    border: none;
+    width: 100%;
+}
+
+#editor .tags li a input {
+    border: none;
+    background: none;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+
+#editor .tags li a .addbutton {
+    cursor: pointer;
+    width: 18px;
+    height: 100%;
+    float: right; // display: inline-block;
+    text-align: center;
 }

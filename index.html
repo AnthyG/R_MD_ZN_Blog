@@ -53,7 +53,39 @@
             </div>
         </header>
 
-        <sections id="main">
+        <isowner v-if="isOwner">
+            <a class="btn btn-accent btn-solid newpostbtn" v-bind:href="'?E:New'" v-bind:onclick="'return app.loadEditor(null);'">Create new post</a>
+            <editor id="editor" v-bind:class="{'hide2' : hide_editor }">
+                <section>
+                    <div class="container">
+                        <input class="editor_title input" placeholder="Title" type="text" v-model="editor_title" />
+                        <input class="input" placeholder="Quote" type="text" v-model="editor_quote" />
+                        <input class="input" placeholder="Quote by" type="text" v-model="editor_quoteBy" />
+                        <div class="byline">
+                            <div class="avatar"></div>
+                            by <span>AnthyG</span></div>
+                        <ul class="tags">
+                            <li class="tag">Tags</li>
+
+                            <li v-for="(tag, index) in editor_tags">
+                                <a v-bind:onclick="'app.editor_tags.splice(' + index + ', 1);'">{{ tag }}</a>
+                            </li>
+
+                            <li>
+                                <a><input v-model="editor_newtag" type="text" placeholder="New tag" /><span class="addbutton" v-bind:onclick="'if (!app.editor_newtag) { return false; } else { app.editor_tags.push(app.editor_newtag); app.editor_newtag = \'\'; }'">+</span></a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div id="editor_outputcntnt" v-html="markPost(editor_cntnt, true)"></div>
+                    <textarea id="editor_inputcntnt" v-model="editor_cntnt" placeholder="Start writing here :)"></textarea>
+                    <a class="btn btn-accent" v-bind:onclick="'return app.editor().save();'">Save</a>
+                    <a class="btn btn-primary2" v-bind:onclick="'return app.editor().empty();'">Empty content of Editor</a>
+                    <a class="btn btn-primary" v-bind:onclick="'return app.editor().close();'">Close</a>
+                </section>
+            </editor>
+        </isowner>
+
+        <sections id="main" v-bind:class="{'hide2': hide_postlist }">
             <div v-for="(post, index) in pPostList">
                 <hr v-if="index > 0">
                 <section>
