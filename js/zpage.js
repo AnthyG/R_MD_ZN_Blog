@@ -134,15 +134,24 @@ var app = new Vue({
         hide_quote: true,
         hide_postlist: true,
 
+        hide_page: true,
+        cur_page: '',
+        pages: {
+            '': {
+                md: false,
+                body: ''
+            }
+        },
+
         isOwner: false,
 
         hide_editor: true,
-        editor_title: 'Title',
+        editor_title: '',
         editor_quote: '',
         editor_quoteBy: '',
         editor_newtag: '',
         editor_tags: [],
-        editor_cntnt: '',
+        editor_body: '',
 
         defaults: {
             author: '',
@@ -239,14 +248,16 @@ var app = new Vue({
             var loadType = (loadType > -1 ? loadType : -1)
 
             this.hide_editor = true
+            this.hide_page = true
+            this.hide_postlist = true
             this.hide_app = true
+
             this.collapse_header = true
             this.hide_quote = true
             this.quote = ''
             this.quoteBy = ''
             this.hide_date = true
             this.date = ''
-            this.hide_postlist = false
 
             setTimeout(function() {
                 console.log("Loading blog..", qs, loadType, reload)
@@ -268,7 +279,13 @@ var app = new Vue({
                         app.quoteBy = ''
                         app.hide_date = true
                         app.date = ''
+
+                        app.cur_page = qs
+
+                        app.hide_page = false
                     } else if (tL === 0) {
+                        app.hide_postlist = false
+
                         app.singlePost = true
 
                         var post = app.postList[app.postList.length - 1 - qs]
@@ -281,6 +298,8 @@ var app = new Vue({
                         app.hide_date = false
                         app.collapse_header = false
                     } else if (tL === 2) {
+                        app.hide_postlist = false
+
                         app.singlePost = false
 
                         var filter_tagList = app.tagList.filter(function(tag_item) {
@@ -300,6 +319,8 @@ var app = new Vue({
                         app.date = ''
                         app.collapse_header = false
                     } else {
+                        app.hide_postlist = false
+
                         app.singlePost = false
 
                         qs = ""
@@ -313,7 +334,7 @@ var app = new Vue({
                         app.collapse_header = false
                     }
 
-                    ownLink(qs ? ('?' + (loadType === 0 ? 'P' : (loadType === 1 ? 'S' : (loadType === 2 ? 'T' : ''))) + ':' + qs) : '?')
+                    ownLink(typeof qs !== "undefined" ? ('?' + (loadType === 0 ? 'P' : (loadType === 1 ? 'S' : (loadType === 2 ? 'T' : ''))) + ':' + qs) : '?')
                 }
 
                 var get_tagList = function(cb) {
@@ -322,6 +343,7 @@ var app = new Vue({
                         "SELECT * FROM tag"
                     ], (tagList) => {
                         app.tagList = tagList
+
                         typeof cb === "function" ? cb(tagList) : genIt()
                     })
                 }
@@ -331,6 +353,7 @@ var app = new Vue({
                         "SELECT * FROM post ORDER BY date_published DESC"
                     ], (postList) => {
                         app.postList = postList
+
                         typeof cb === "function" ? cb(postList) : genIt()
                     })
                 }
@@ -341,15 +364,37 @@ var app = new Vue({
                     ], (post) => {
                         if (typeof post[0] !== "undefined") {
                             app.postList[app.postList.length - 1 - qs] = post[0]
+
                             typeof cb === "function" ? cb(post[0]) : genIt()
                         } else
                             showError('**This _post_ does _not_ exist**')
                     })
                 }
 
+                var get_page = function(cb) {
+                    console.log("getting page", cb)
+                    page.cmd("dbQuery", [
+                        "SELECT * FROM page WHERE title = '" + qs + "'"
+                    ], (qpage) => {
+                        if (typeof qpage[0] !== "undefined") {
+                            app.pages[qpage[0].title] = {
+                                md: (qpage[0].md ? true : false),
+                                body: qpage[0].body
+                            }
+
+                            typeof cb === "function" ? cb(qpage[0]) : genIt()
+                        } else
+                            showError('**This _page_ does _not_ exist**')
+                    })
+                }
+
                 function getStuff() {
                     if (tL === 1) {
                         // Get sub-page
+                        if (app.pages.length > 0 && typeof app.pages[qs] !== "undefined" && !reload)
+                            genIt()
+                        else
+                            get_page()
                     } else if (tL === 0) {
                         // Get post
                         if (app.postList.length > 0 && typeof app.postList[app.postList.length - 1 - qs] !== "undefined" && !reload)
@@ -388,7 +433,11 @@ var app = new Vue({
                 // return false
             }
 
-            var ep = ep || null
+            if ((typeof ep === "string" && parseInt(ep) >= 0) || ep >= 0) {
+                ep = parseInt(ep)
+            } else {
+                ep = null
+            }
 
             this.hide_app = true
             this.collapse_header = true
@@ -402,9 +451,80 @@ var app = new Vue({
             setTimeout(function() {
                 console.log("Loading editor..", ep)
 
-                app.hide_editor = false
+                var get_tags = function(cb) {
+                    console.log("getting tags", cb)
+                    page.cmd("dbQuery", [
+                        "SELECT * FROM tag WHERE post_id = " + ep
+                    ], (tagList) => {
+                        if (typeof tagList[0] === "undefined") {
+                            showError('This _post_ has _no tags_ yet!')
+                        }
+                        typeof cb === "function" && cb(tagList)
+                    })
+                }
 
-                ownLink(ep ? ('?E:' + ep) : '?E:New')
+                var get_post = function(cb) {
+                    console.log("getting post", cb)
+                    page.cmd("dbQuery", [
+                        "SELECT * FROM post WHERE post_id = " + ep
+                    ], (post) => {
+                        if (typeof post[0] === "undefined") {
+                            showError('**This _post_ does _not_ exist**\n Creating a new')
+                        }
+                        typeof cb === "function" && cb(post[0])
+                    })
+                }
+
+                var fin = function() {
+                    app.hide_editor = false
+                    ownLink(parseInt(ep) >= 0 ? ('?E:' + parseInt(ep)) : '?E:New')
+                }
+
+                if (parseInt(ep) >= 0) {
+                    get_post(function(post) {
+                        console.log(post)
+                        if (!post) {
+                            ep = null
+
+                            app.editor_title = ''
+                            app.editor_quote = ''
+                            app.editor_quoteBy = ''
+                            app.editor_newtag = ''
+                            app.editor_tags = []
+                            app.editor_body = ''
+
+                            fin()
+
+                            return false
+                        }
+
+                        get_tags(function(tags) {
+                            app.editor_title = post.title
+                            app.editor_quote = post.quote
+                            app.editor_quoteBy = post.quoteBy
+                            app.editor_body = post.body
+                            app.editor_newtag = ''
+
+                            console.log(tags)
+
+                            app.editor_tags = []
+                            for (var ti in tags) {
+                                app.editor_tags.push(tags[ti].value)
+                            }
+
+                            fin()
+                        })
+                    })
+                } else {
+                    app.editor_title = ''
+                    app.editor_quote = ''
+                    app.editor_quoteBy = ''
+                    app.editor_newtag = ''
+                    app.editor_tags = []
+                    app.editor_body = ''
+
+                    fin()
+                }
             }, 0)
 
             return false
@@ -487,7 +607,7 @@ var app = new Vue({
                             "quote": app.editor_quote,
                             "quoteBy": app.editor_quoteBy,
                             "date_published": parseInt(moment().utc().format('x')),
-                            "body": app.editor_cntnt
+                            "body": app.editor_body
                         })
 
                         data.next_post_id = data.post.length
@@ -505,7 +625,7 @@ var app = new Vue({
                         app.editor_quoteBy = ''
                         app.editor_newtag = ''
                         app.editor_tags = []
-                        app.editor_cntnt = ''
+                        app.editor_body = ''
 
                         // Encode data array to utf8 json text
                         var json_raw = unescape(encodeURIComponent(JSON.stringify(data, undefined, '\t')))
@@ -555,7 +675,7 @@ var app = new Vue({
                     app.editor_quoteBy = ''
                     app.editor_newtag = ''
                     app.editor_tags = []
-                    app.editor_cntnt = ''
+                    app.editor_body = ''
 
                     return false
                 }
@@ -669,6 +789,12 @@ class Page extends ZeroFrame {
     }
 }
 page = new Page()
+
+function showError(msg) {
+    page.cmd("wrapperNotification", [
+        "error", msg
+    ])
+}
 
 
 

@@ -76,8 +76,8 @@
                             </li>
                         </ul>
                     </div>
-                    <div id="editor_outputcntnt" v-html="markPost(editor_cntnt, true)"></div>
-                    <textarea id="editor_inputcntnt" v-model="editor_cntnt" placeholder="Start writing here :)"></textarea>
+                    <div id="editor_outputcntnt" v-html="markPost(editor_body, true)"></div>
+                    <textarea id="editor_inputcntnt" v-model="editor_body" placeholder="Start writing here :)"></textarea>
                     <a class="btn btn-accent" v-bind:onclick="'return app.editor().save();'">Save</a>
                     <a class="btn btn-primary2" v-bind:onclick="'return app.editor().empty();'">Empty content of Editor</a>
                     <a class="btn btn-primary" v-bind:onclick="'return app.editor().close();'">Close</a>
@@ -93,8 +93,9 @@
                     <div class="container">
                         <h2 v-if="!singlePost">
                             <a class="first after" v-bind:href="'?P:' + post.post_id" v-bind:onclick="'return app.loadBlog(' + post.post_id + ', 0);'">{{ post.title }}</a>
+                            <a class="btn" style="font-size: initial;" v-if="isOwner" v-bind:href="'?E:' + post.post_id" v-bind:onclick="'return app.loadEditor(' + post.post_id + ');'">Edit</a>
                         </h2>
-                        <h1 v-else class="title">{{ post.title }}</h1>
+                        <h1 v-else class="title">{{ post.title }} <a class="btn" style="font-size: initial;" v-if="isOwner" v-bind:href="'?E:' + post.post_id" v-bind:onclick="'return app.loadEditor(' + post.post_id + ');'">Edit</a></h1>
 
                         <h5 v-if="!singlePost">{{ moment(post.date_published, "x").format("MMMM Do, YYYY") }}</h5>
                         <div v-else class="byline">
@@ -114,6 +115,12 @@
                 </section>
             </div>
         </sections>
+
+        <page id="page" v-bind:class="{'hide2': hide_page} ">
+            <h1>{{ cur_page }}</h1>
+            <div v-if="pages[cur_page].md" v-html="markPost(pages[cur_page].body, true)"></div>
+            <div v-else v-html="pages[cur_page].body"></div>
+        </page>
 
         <footer class="footer">
             <a class="footer-logo" href="?" onclick="return app.loadBlog(-1);">
