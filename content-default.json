@@ -1,0 +1,22 @@
+{
+    "address": "1MdwanV12uDDiVsgrsifDFdSsigLRD9dzu",
+    "address_index": 42718485,
+    "background-color": "#FFF",
+    "clone_root": "template-new",
+    "cloned_from": "1MdwanV12uDDiVsgrsifDFdSsigLRD9dzu",
+    "description": "My very own Blog, to blog bloggy stuff",
+    "files": {},
+    "ignore": "((js|css)/(?!all.(js|css))|data/.*db|data/users/.*/.*|node_modules|sass|.vscode|.git|disabled)",
+    "inner_path": "content.json",
+    "modified": 1507460181,
+    "postmessage_nonce_security": true,
+    "signers_sign": "G2+EStnWM4s7UtqAkHdz6opaCmXqumB1QkilLDvEaFAPR15vBILktlHtDCvdAPUTZ+8uglTvVc5562C7imz+ClA=",
+    "signs": {
+        "1MdwanV12uDDiVsgrsifDFdSsigLRD9dzu": "G8ctoDquI3j6nsyF6ey6TY+00DZJQm6NPSWJqZam+bnESy44NqbG8OKL6mbr3PppnDigiPMTAmP2BczkLktAHrI="
+    },
+    "signs_required": 1,
+    "title": "Glightstar's Blog",
+    "translate": ["js/all.js"],
+    "viewport": "width=device-width, initial-scale=1.0, shrink-to-fit=no",
+    "zeronet_version": "0.6.0"
+}
