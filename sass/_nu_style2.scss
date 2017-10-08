@@ -19,15 +19,18 @@ $prT_m: 4;
 
 /* Override Elements */
 
-sections div section div section.asection:first-child {
+sections div section div section.asection:first-child,
+page div section div section.asection:first-child {
     padding-top: 0;
 }
 
-sections div section div section.asection:last-child {
+sections div section div section.asection:last-child,
+page div section div section.asection:last-child {
     padding-bottom: 0;
 }
 
-sections div section div section.asection h1 {
+sections div section div section.asection h1,
+page div section div section.asection h1 {
     font-size: 1.5em;
     -webkit-margin-before: 0.83em;
     -webkit-margin-after: 0.83em;

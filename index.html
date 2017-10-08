@@ -117,9 +117,15 @@
         </sections>
 
         <page id="page" v-bind:class="{'hide2': hide_page} ">
-            <h1>{{ cur_page }}</h1>
-            <div v-if="pages[cur_page].md" v-html="markPost(pages[cur_page].body, true)"></div>
-            <div v-else v-html="pages[cur_page].body"></div>
+            <div>
+                <section>
+                    <div class="container">
+                        <h1 class="title">{{ cur_page }}</h1>
+                    </div>
+                    <div v-if="pages[cur_page].md" v-html="markPost(pages[cur_page].body, true)"></div>
+                    <div v-else v-html="pages[cur_page].body"></div>
+                </section>
+            </div>
         </page>
 
         <footer class="footer">
