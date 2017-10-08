@@ -11,8 +11,8 @@
    "size": 253
   },
   "css/all.css": {
-   "sha512": "d3a82904466e72858858da92678cc2cf2cca9b2553ffa32a7ca6259940fa92ce",
-   "size": 81751
+   "sha512": "84551106ea9afc6c820d87ccc27585262e8453cc83fcca5aa118c7fae26c4938",
+   "size": 84114
   },
   "data-default/data-default.json": {
    "sha512": "57d4e45184dfe5ce8b744f0aac6fdbde1e2e5ae588de6633b0a90ca0b2eb599c",
@@ -39,8 +39,8 @@
    "size": 8803
   },
   "index.html": {
-   "sha512": "590452517f51b5b12ac065850367b49815418ad79f4955a0a899245a3aadcc69",
-   "size": 7474
+   "sha512": "0e417f1812795ad5319d2bb2097d4808fe8a154fd5cc096166970c6f15a35b8e",
+   "size": 7590
   },
   "index1.html": {
    "sha512": "640bf865974f1c9a33be0a3e2083c1d7e715624aa8e8bcadcba795ef532d5c61",
@@ -61,11 +61,11 @@
  },
  "ignore": "((js|css)/(?!all.(js|css))|data/.*db|data/users/.*/.*|node_modules|sass|.vscode|.git|disabled)",
  "inner_path": "content.json",
- "modified": 1507410822,
+ "modified": 1507460181,
  "postmessage_nonce_security": true,
  "signers_sign": "G2+EStnWM4s7UtqAkHdz6opaCmXqumB1QkilLDvEaFAPR15vBILktlHtDCvdAPUTZ+8uglTvVc5562C7imz+ClA=",
  "signs": {
-  "1MdwanV12uDDiVsgrsifDFdSsigLRD9dzu": "G491WfnN1/c8vg6XW7t19EAk3c4MvgoJHYi+B5oihVfGf4lB6HTHf5wPRBnV6u1rwI0D75W4e1szG4YbCRiU1Mw="
+  "1MdwanV12uDDiVsgrsifDFdSsigLRD9dzu": "G8ctoDquI3j6nsyF6ey6TY+00DZJQm6NPSWJqZam+bnESy44NqbG8OKL6mbr3PppnDigiPMTAmP2BczkLktAHrI="
  },
  "signs_required": 1,
  "title": "Glightstar's Blog",
