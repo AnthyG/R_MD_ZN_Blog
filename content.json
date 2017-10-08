@@ -11,16 +11,16 @@
    "size": 253
   },
   "css/all.css": {
-   "sha512": "4436a13cb746aaa2b21dcf4a1d25859ca181cc057b22b0039fbaffe81065420c",
-   "size": 41130
+   "sha512": "d3a82904466e72858858da92678cc2cf2cca9b2553ffa32a7ca6259940fa92ce",
+   "size": 81751
   },
   "data-default/data-default.json": {
    "sha512": "57d4e45184dfe5ce8b744f0aac6fdbde1e2e5ae588de6633b0a90ca0b2eb599c",
    "size": 1321
   },
   "data/data.json": {
-   "sha512": "d18105d7981c7d9693bed6a619baa2dd87e440b6965fde1334e1e8e8c7cc1aec",
-   "size": 10997
+   "sha512": "9727417a9161721dd3c5cda24c2b5271040d189e4cab38ccc4f11e498b434efd",
+   "size": 11934
   },
   "data/images/avatar.jpg": {
    "sha512": "bb2e7aa8d0fbbf41f2804c4e5a68cfd711459e1c2976f06b25f798480011cf34",
@@ -39,8 +39,8 @@
    "size": 8803
   },
   "index.html": {
-   "sha512": "462a20a30c1f787f02a7e7081cede568f0db66da3748a37795c34d74be44563d",
-   "size": 5156
+   "sha512": "590452517f51b5b12ac065850367b49815418ad79f4955a0a899245a3aadcc69",
+   "size": 7474
   },
   "index1.html": {
    "sha512": "640bf865974f1c9a33be0a3e2083c1d7e715624aa8e8bcadcba795ef532d5c61",
@@ -51,8 +51,8 @@
    "size": 4095
   },
   "js/all.js": {
-   "sha512": "d5ac9469aac082654d8b6d814d346db8f1dafbc51947ab4da0193cf647e6c031",
-   "size": 561365
+   "sha512": "c68a30a3dac718d1bd5379d86710f710d6cfaa95902832a088c8888a95458c15",
+   "size": 566664
   },
   "package.json": {
    "sha512": "943299b6337609b4596e88cc67baec0905a4c2a256c4d5ecdac11fe6126a4604",
@@ -61,15 +61,15 @@
  },
  "ignore": "((js|css)/(?!all.(js|css))|data/.*db|data/users/.*/.*|node_modules|sass|.vscode|.git|disabled)",
  "inner_path": "content.json",
- "modified": 1501073184,
+ "modified": 1507410822,
  "postmessage_nonce_security": true,
  "signers_sign": "G2+EStnWM4s7UtqAkHdz6opaCmXqumB1QkilLDvEaFAPR15vBILktlHtDCvdAPUTZ+8uglTvVc5562C7imz+ClA=",
  "signs": {
-  "1MdwanV12uDDiVsgrsifDFdSsigLRD9dzu": "Gwby7Mrcm9YLGQgsvgGXbsJtvzr0TzOVm3Zd0qTiCeAeaY+E6yJiaezqEWI/oVU/oVk4fgoSrW3OZBLAzMgerp8="
+  "1MdwanV12uDDiVsgrsifDFdSsigLRD9dzu": "G491WfnN1/c8vg6XW7t19EAk3c4MvgoJHYi+B5oihVfGf4lB6HTHf5wPRBnV6u1rwI0D75W4e1szG4YbCRiU1Mw="
  },
  "signs_required": 1,
  "title": "Glightstar's Blog",
  "translate": ["js/all.js"],
  "viewport": "width=device-width, initial-scale=1.0, shrink-to-fit=no",
- "zeronet_version": "0.5.7"
+ "zeronet_version": "0.6.0"
 }
