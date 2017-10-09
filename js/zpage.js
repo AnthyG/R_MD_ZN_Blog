@@ -272,7 +272,7 @@ var app = new Vue({
                 }
 
                 var genIt = function() {
-                    if (tL === 1) {
+                    if (tL === 1) { // Page
                         app.collapse_header = true
                         app.hide_quote = true
                         app.quote = ''
@@ -283,7 +283,7 @@ var app = new Vue({
                         app.cur_page = qs
 
                         app.hide_page = false
-                    } else if (tL === 0) {
+                    } else if (tL === 0) { // Single post
                         app.hide_postlist = false
 
                         app.singlePost = true
@@ -297,7 +297,7 @@ var app = new Vue({
                             // app.date = moment(post.date_published, "x").format("MMMM Do, YYYY")
                         app.hide_date = false
                         app.collapse_header = false
-                    } else if (tL === 2) {
+                    } else if (tL === 2) { // Posts with tag
                         app.hide_postlist = false
 
                         app.singlePost = false
@@ -318,7 +318,7 @@ var app = new Vue({
                         app.hide_date = true
                         app.date = ''
                         app.collapse_header = false
-                    } else {
+                    } else { // All posts
                         app.hide_postlist = false
 
                         app.singlePost = false
@@ -710,9 +710,9 @@ class Page extends ZeroFrame {
         this.cmd("siteInfo", [], function(site_info) {
             page.site_info = site_info
 
-            app.isOwner = page.site_info.settings.own
-
             page.setSiteInfo(site_info)
+
+            app.isOwner = page.site_info.settings.own
 
             page.cmd("serverInfo", [], (res) => {
                 page.server_info = res
@@ -726,20 +726,19 @@ class Page extends ZeroFrame {
             qs1 = getParameterByName('S'),
             qs2 = getParameterByName('T'),
             qs3 = getParameterByName('E')
-        var loadType = 0
+        var loadType = -1
 
         if ( /*app.isOwner && */ typeof qs3 === "string" && qs3 !== "") {
             loadType = 3
-        } else if (parseInt(qs0) >= 0)
+        } else if (parseInt(qs0) >= 0) {
             qs = parseInt(qs0)
-        else if (typeof qs1 === "string" && qs1 !== "") {
+            loadType = 0
+        } else if (typeof qs1 === "string" && qs1 !== "") {
             qs = qs1
             loadType = 1
         } else if (typeof qs2 === "string" && qs2 !== "") {
             qs = qs2
             loadType = 2
-        } else {
-            loadType = -1
         }
 
         console.log(qs, qs0, qs1, qs2, qs3, loadType)
