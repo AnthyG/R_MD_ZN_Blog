@@ -86,9 +86,12 @@
                     </div>
                     <div id="editor_outputcntnt" v-html="markPost(editor_body, true)"></div>
                     <textarea id="editor_inputcntnt" v-model="editor_body" placeholder="Start writing here :)"></textarea>
-                    <a class="btn btn-accent" v-bind:onclick="'return app.editor().save();'">Save</a>
-                    <a class="btn btn-primary2" v-bind:onclick="'return app.editor().empty();'">Empty content of Editor</a>
-                    <a class="btn btn-primary" v-bind:onclick="'return app.editor().close();'">Close</a>
+                    <div id="editor_btns">
+                        <a class="btn btn-accent" v-bind:onclick="'return app.editor().save();'">Save</a>
+                        <a class="btn btn-accent" v-bind:onclick="'return app.editor().save(true);'">Save and Publish</a>
+                        <a class="btn btn-primary2" v-bind:onclick="'return app.editor().empty();'">Empty content of Editor</a>
+                        <a class="btn btn-primary" v-bind:onclick="'return app.editor().close();'">Close</a>
+                    </div>
                 </section>
             </editor>
         </isowner>

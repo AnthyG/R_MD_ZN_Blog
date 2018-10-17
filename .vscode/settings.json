@@ -1,8 +1,12 @@
 {
-    "liveSassCompile.settings.savePath": "/css",
-    "liveSassCompile.settings.format": "nested",
-    "liveSassCompile.settings.extensionName": ".min.css",
-    "liveSassCompile.settings.excludeFolders": [
+    "liveSassCompile.settings.formats": [
+        {
+            "format": "nested",
+            "extensionName": ".min.css",
+            "savePath": "/css"
+        }
+    ],
+    "liveSassCompile.settings.excludeList": [
         "**/node_modules/**",
         "**/.vscode/**",
         "**/css/**",

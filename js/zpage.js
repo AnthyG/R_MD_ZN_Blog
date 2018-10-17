@@ -152,6 +152,7 @@ var app = new Vue({
         editor_newtag: '',
         editor_tags: [],
         editor_body: '',
+        editor_editing: null,
 
         defaults: {
             author: '',
@@ -477,6 +478,7 @@ var app = new Vue({
 
                 var fin = function() {
                     app.hide_editor = false
+                    app.editor_editing = ep
                     ownLink(parseInt(ep) >= 0 ? ('?E:' + parseInt(ep)) : '?E:New')
                 }
 
@@ -531,7 +533,7 @@ var app = new Vue({
         },
         editor: function() {
             return {
-                save: function() {
+                save: function(publish) {
                     console.log("Saving editor content")
 
                     var data_inner_path = "data/data.json"
@@ -599,33 +601,52 @@ var app = new Vue({
                                 "post_id": 0
                             }]
 
-                        var tpid = data.next_post_id
-
-                        data.post.push({
-                            "post_id": tpid,
+                        var npost = {
                             "title": app.editor_title,
                             "quote": app.editor_quote,
                             "quoteBy": app.editor_quoteBy,
                             "date_published": parseInt(moment().utc().format('x')),
                             "body": app.editor_body
-                        })
+                        }
+
+                        var tpid = data.next_post_id
+                        if (typeof app.editor_editing === "number") {
+                            tpid = app.editor_editing
+
+                            npost.post_id = tpid
+                            data.post[tpid] = npost
+                        } else {
+                            npost.post_id = tpid
+                            data.post.push(npost)
+                        }
 
                         data.next_post_id = data.post.length
 
+                        var filter_tagListI = -1
+                        var already_tags = []
+                        var filter_tagList = data.tag.filter(function(tag_item) {
+                            filter_tagListI++
+
+                            let tagtest = tag_item.post_id === tpid
+                            if (tagtest && app.editor_tags.indexOf(tag_item.value) === -1) {
+                                data.tag.splice(filter_tagListI, 1)
+                                return false
+                            } else if (tagtest && app.editor_tags.indexOf(tag_item.value) !== -1) {
+                                already_tags.push(tag_item.value)
+                            }
+
+                            return tagtest
+                        })
+
                         for (var tx = 0; tx < app.editor_tags.length; tx++) {
                             var ty = app.editor_tags[tx]
-                            data.tag.push({
-                                "value": ty,
-                                "post_id": tpid
-                            })
+                            if (already_tags.indexOf(ty) === -1) {
+                                data.tag.push({
+                                    "value": ty,
+                                    "post_id": tpid
+                                })
+                            }
                         }
-
-                        app.editor_title = 'Title'
-                        app.editor_quote = ''
-                        app.editor_quoteBy = ''
-                        app.editor_newtag = ''
-                        app.editor_tags = []
-                        app.editor_body = ''
 
                         // Encode data array to utf8 json text
                         var json_raw = unescape(encodeURIComponent(JSON.stringify(data, undefined, '\t')))
@@ -637,18 +658,30 @@ var app = new Vue({
                             json_rawA
                         ], (res) => {
                             if (res == "ok") {
-                                page.cmd("siteSign", {
-                                    "inner_path": content_inner_path
-                                }, (res) => {
-                                    page.cmd("sitePublish", {
-                                        "inner_path": content_inner_path,
-                                        "sign": false
-                                    }, function() {
-                                        page.cmd("wrapperNotification", [
-                                            "done", "Your post has been successfully published! :)"
-                                        ])
+                                if (publish) {
+                                    app.loadBlog(tpid, 0, true)
+
+                                    app.editor_title = 'Title'
+                                    app.editor_quote = ''
+                                    app.editor_quoteBy = ''
+                                    app.editor_newtag = ''
+                                    app.editor_tags = []
+                                    app.editor_body = ''
+                                    app.editor_editing = null
+
+                                    page.cmd("siteSign", {
+                                        "inner_path": content_inner_path
+                                    }, (res) => {
+                                        page.cmd("sitePublish", {
+                                            "inner_path": content_inner_path,
+                                            "sign": false
+                                        }, function() {
+                                            page.cmd("wrapperNotification", [
+                                                "done", "Your post has been successfully published! :)"
+                                            ])
+                                        })
                                     })
-                                })
+                                }
                             } else {
                                 page.cmd("wrapperNotification", [
                                     "error", "File write error: " + JSON.stringify(res)
