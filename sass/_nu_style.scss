@@ -427,9 +427,9 @@ section {
             }
         }
     }
-    #toggle {
+    .comment-toggle {
         display: none;
-        &:checked+.toggle {
+        &:checked+.comment-toggle {
             .indicator {
                 transform: rotate(45deg);
             }

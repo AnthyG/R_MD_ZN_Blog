@@ -359,3 +359,12 @@ $btnclrs: (primary, $color-p),
     float: right; // display: inline-block;
     text-align: center;
 }
+
+.comment_inputs {
+    margin-bottom: 50px;
+    .comment_inputcntnt {
+        width: 100%;
+        min-width: 100%;
+        resize: vertical;
+    }
+}

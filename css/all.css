@@ -3236,12 +3236,12 @@ section {
         background-color: white;
         -webkit-transform: translateX(-1px);
                 -webkit-transform: translateX(-1px); -moz-transform: translateX(-1px); -o-transform: translateX(-1px); -ms-transform: translateX(-1px); transform: translateX(-1px) ; }
-  .comments #toggle {
+  .comments .comment-toggle {
     display: none; }
-    .comments #toggle:checked + .toggle .indicator {
+    .comments .comment-toggle:checked + .comment-toggle .indicator {
       -webkit-transform: rotate(45deg);
               -webkit-transform: rotate(45deg); -moz-transform: rotate(45deg); -o-transform: rotate(45deg); -ms-transform: rotate(45deg); transform: rotate(45deg) ; }
-    .comments #toggle:checked ~ .wrapper {
+    .comments .comment-toggle:checked ~ .wrapper {
       height: auto; }
   .comments .wrapper {
     position: relative;
@@ -3708,6 +3708,13 @@ a.after:hover:after {
   height: 100%;
   float: right;
   text-align: center; }
+
+.comment_inputs {
+  margin-bottom: 50px; }
+  .comment_inputs .comment_inputcntnt {
+    width: 100%;
+    min-width: 100%;
+    resize: vertical; }
 /*# sourceMappingURL=main.min.css.map */
 
 

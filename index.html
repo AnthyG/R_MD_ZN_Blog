@@ -124,6 +124,31 @@
 
                     <div v-html="markPost(post.body)"></div>
                 </section>
+                <section class="comments">
+                    <div class="container">
+                        <input class="comment-toggle" type="checkbox" v-bind:id="'comment_toggle_' + post.post_id" />
+                        <label class="toggle" v-bind:for="'comment_toggle_' + post.post_id">
+                            Toggle Comments <i class="indicator"></i>
+                        </label>
+                        <div class="wrapper">
+                            <div class="comment_inputs">
+                                <textarea class="comment_inputcntnt input" v-model="commenter_body" placeholder="Go ahead and leave a comment! :)" rows="3"></textarea>
+                                <a class="btn btn-accent" v-bind:onclick="'return app.comment().submit(' + post.post_id + ');'">Submit</a>
+                            </div>
+                            <div v-for="(comment, index) in printComments(post.post_id)" class="comment">
+                                <div class="user">
+                                    <div class="pic"></div>
+                                    <div class="date" v-html="moment(comment.date_added, 'x').from()"></div>
+                                </div>
+
+                                <div class="text">
+                                    <div class="author">{{ comment.cert_user_id }}</div>
+                                    <p>{{ comment.body }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </div>
         </sections>
 

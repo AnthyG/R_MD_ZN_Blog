@@ -36,6 +36,22 @@ function hexToString(tmp) {
 
 
 
+JSON.parseS = function(string) {
+    try {
+        var json = JSON.parse(string)
+    } catch (e) {
+        var json = null
+    }
+    return json
+};
+
+JSON.copy = function(json) {
+    var string = JSON.stringify(json)
+    return JSON.parseS(string)
+}
+
+
+
 marked.setOptions({
     "gfm": true,
     "breaks": true,
@@ -154,6 +170,8 @@ var app = new Vue({
         editor_body: '',
         editor_editing: null,
 
+        commenter_body: '',
+
         defaults: {
             author: '',
             copyright: '',
@@ -175,7 +193,8 @@ var app = new Vue({
         footer: [],
         postList: [],
         tagList: [],
-        pPostList: []
+        pPostList: [],
+        commentList: []
     },
     methods: {
         markDefault: function(d) {
@@ -188,10 +207,11 @@ var app = new Vue({
             var opts = {
                 renderer: markedR2
             }
-            if (fPart.new_tab)
+            if (fPart.new_tab) {
                 opts = {
                     renderer: markedR
                 }
+            }
             return marked('- ### ' + fPart.title + '\n' + links, opts)
                 .replace(/<ul>|<\/ul>/gmi, '')
         },
@@ -219,6 +239,18 @@ var app = new Vue({
         printTags: function(post_id) {
             return this.tagList.filter(function(tag_item) {
                 return tag_item.post_id === post_id
+            })
+        },
+        printComments: function(post_id) {
+            return app.commentList.filter(function(comment_item) {
+                return comment_item.post_id === post_id
+            }).sort(function(a, b) {
+                var A = a.date_added
+                var B = b.date_added
+
+                if (A > B) return -1
+                if (A < B) return 1
+                return 0
             })
         },
         loadDefaults: function() {
@@ -348,6 +380,16 @@ var app = new Vue({
                         typeof cb === "function" ? cb(tagList) : genIt()
                     })
                 }
+                var get_commentList = function(cb) {
+                    console.log("getting commentList", cb)
+                    page.cmd("dbQuery", [
+                        "SELECT * FROM comment JOIN json USING (json_id)"
+                    ], (commentList) => {
+                        app.commentList = commentList
+
+                        typeof cb === "function" ? cb(commentList) : genIt()
+                    })
+                }
                 var get_postList = function(cb) {
                     console.log("getting postList", cb)
                     page.cmd("dbQuery", [
@@ -367,8 +409,9 @@ var app = new Vue({
                             app.postList[app.postList.length - 1 - qs] = post[0]
 
                             typeof cb === "function" ? cb(post[0]) : genIt()
-                        } else
+                        } else {
                             showError('**This _post_ does _not_ exist**')
+                        }
                     })
                 }
 
@@ -384,24 +427,27 @@ var app = new Vue({
                             }
 
                             typeof cb === "function" ? cb(qpage[0]) : genIt()
-                        } else
+                        } else {
                             showError('**This _page_ does _not_ exist**')
+                        }
                     })
                 }
 
                 function getStuff() {
                     if (tL === 1) {
                         // Get sub-page
-                        if (app.pages.length > 0 && typeof app.pages[qs] !== "undefined" && !reload)
+                        if (app.pages.length > 0 && typeof app.pages[qs] !== "undefined" && !reload) {
                             genIt()
-                        else
+                        } else {
                             get_page()
+                        }
                     } else if (tL === 0) {
                         // Get post
-                        if (app.postList.length > 0 && typeof app.postList[app.postList.length - 1 - qs] !== "undefined" && !reload)
+                        if (app.postList.length > 0 && typeof app.postList[app.postList.length - 1 - qs] !== "undefined" && !reload) {
                             genIt()
-                        else
+                        } else {
                             get_post()
+                        }
 
                         // } else if (tL === 2) {
                         //     // Get postList
@@ -411,19 +457,33 @@ var app = new Vue({
                         //         get_postList()
                     } else {
                         // Get postList
-                        if (app.postList.length > 0 && !reload)
+                        if (app.postList.length > 0 && !reload) {
                             genIt()
-                        else
+                        } else {
                             get_postList()
+                        }
                     }
                 }
 
-                if (!app.tagList.length > 0)
+                if (!app.tagList.length > 0) {
                     get_tagList(function() {
-                        getStuff()
+                        if (!app.commentList.length > 0) {
+                            get_commentList(function() {
+                                getStuff()
+                            })
+                        } else {
+                            getStuff()
+                        }
                     })
-                else
-                    getStuff()
+                } else {
+                    if (!app.commentList.length > 0) {
+                        get_commentList(function() {
+                            getStuff()
+                        })
+                    } else {
+                        getStuff()
+                    }
+                }
             }, 0)
 
             return false
@@ -543,26 +603,34 @@ var app = new Vue({
                         "inner_path": data_inner_path,
                         "required": false
                     }, (data) => {
-                        if (data)
-                            var data = JSON.parse(data)
-                        else
+                        if (data) {
+                            var data = JSON.parseS(data)
+                        } else {
                             var data = {}
+                        }
 
-                        if (!data.hasOwnProperty("author"))
+                        if (!data.hasOwnProperty("author")) {
                             data.author = "Author"
-                        if (!data.hasOwnProperty("title"))
+                        }
+                        if (!data.hasOwnProperty("title")) {
                             data.title = "A Blog"
-                        if (!data.hasOwnProperty("description"))
+                        }
+                        if (!data.hasOwnProperty("description")) {
                             data.description = "A nice-looking blog"
-                        if (!data.hasOwnProperty("copyright"))
+                        }
+                        if (!data.hasOwnProperty("copyright")) {
                             data.copyright = "The Author"
-                        if (!data.hasOwnProperty("next_post_id"))
+                        }
+                        if (!data.hasOwnProperty("next_post_id")) {
                             data.next_post_id = 1
-                        if (!data.hasOwnProperty("modified"))
+                        }
+                        if (!data.hasOwnProperty("modified")) {
                             data.modified = 0
-                        if (!data.hasOwnProperty("created"))
+                        }
+                        if (!data.hasOwnProperty("created")) {
                             data.created = 0
-                        if (!data.hasOwnProperty("footer"))
+                        }
+                        if (!data.hasOwnProperty("footer")) {
                             data.footer = [{
                                 "title": "Content",
                                 "new_tab": false,
@@ -572,7 +640,8 @@ var app = new Vue({
                                 "new_tab": true,
                                 "links": "[ZeroMe](/Me.ZeroNetwork.bit/?Profile/1oranGeS2xsKZ4jVsu9SVttzgkYXu4k9v/14K7EydgyeP84L1NKaAHBZTPQCev8BbqCy/),[GitHub](https://github.com/AnthyG)"
                             }]
-                        if (!data.hasOwnProperty("page"))
+                        }
+                        if (!data.hasOwnProperty("page")) {
                             data.page = [{
                                 "title": "About",
                                 "md": true,
@@ -586,7 +655,8 @@ var app = new Vue({
                                 "md": true,
                                 "body": "Here are all the Projects I'm working on, each with a link to the Zite, and a link to the GitHub-Repository.\n- [ThunderWave](/thunderwave.bit) ([_GitHub_](https://github.com/AnthyG/ThunderWave))\n- [ThunderNote](/1PkvY7bXkmpns9h9b9spkjYpWu3eV6actD/) ([_GitHub_](https://github.com/AnthyG/ThunderNote))\n- [This Blog](/1MdwanV12uDDiVsgrsifDFdSsigLRD9dzu) ([_GitHub_](https://github.com/AnthyG/R_MD_ZN_Blog))\n"
                             }]
-                        if (!data.hasOwnProperty("post"))
+                        }
+                        if (!data.hasOwnProperty("post")) {
                             data.post = [{
                                 "post_id": 0,
                                 "title": "Markdown-Guide",
@@ -595,11 +665,13 @@ var app = new Vue({
                                 "date_published": 0,
                                 "body": "See the guide on \n> [Markdown-Here's Wiki-Page](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)"
                             }]
-                        if (!data.hasOwnProperty("tag"))
+                        }
+                        if (!data.hasOwnProperty("tag")) {
                             data.tag = [{
                                 "value": "Hello :)",
                                 "post_id": 0
                             }]
+                        }
 
                         var npost = {
                             "title": app.editor_title,
@@ -713,6 +785,82 @@ var app = new Vue({
                     return false
                 }
             }
+        },
+        comment: function() {
+            return {
+                submit: function(post_id) {
+                    var verified = page.verifyUser()
+                    if (!verified) {
+                        return false
+                    }
+
+                    if (app.commenter_body && /\S/.test(app.commenter_body)) {
+                        console.log("Submitting comment")
+
+                        page.verifyUserFiles(function() {
+                            var data_inner_path = "data/users/" + page.site_info.auth_address + "/data.json"
+                            var content_inner_path = "data/users/" + page.site_info.auth_address + "/content.json"
+
+                            page.cmd("fileGet", {
+                                "inner_path": data_inner_path,
+                                "required": false
+                            }, (data) => {
+                                console.log(JSON.copy(data))
+                                if (data) {
+                                    var data = JSON.parseS(data)
+                                    if (data === null) {
+                                        page.cmd("wrapperNotification", [
+                                            "error", "The following file has invalid content!\n" + data_inner_path
+                                        ])
+                                        return false
+                                    }
+                                } else {
+                                    var data = {}
+                                }
+
+                                var ncomment = {
+                                    "body": app.commenter_body,
+                                    "date_added": parseInt(moment().utc().format("x")),
+                                    "post_id": post_id,
+                                    // "post_id": app.pPostList[0].post_id
+                                }
+                                var di = data.comment.push(ncomment)
+
+                                // Encode data array to utf8 json text
+                                var json_raw = unescape(encodeURIComponent(JSON.stringify(data, undefined, '\t')))
+                                var json_rawA = btoa(json_raw)
+
+                                // Write file to disk
+                                page.cmd("fileWrite", [
+                                    data_inner_path,
+                                    json_rawA
+                                ], (res) => {
+                                    if (res == "ok") {
+                                        app.commenter_body = ''
+
+                                        ncomment.cert_user_id = page.site_info.cert_user_id
+                                        ncomment.directory = "users/" + page.site_info.auth_address
+                                        ncomment.file_name = "data.json"
+
+                                        app.commentList.push(ncomment)
+
+                                        page.cmd("sitePublish", {
+                                            "inner_path": content_inner_path,
+                                            "sign": true
+                                        }, function() {})
+                                    } else {
+                                        this.cmd("wrapperNotification", [
+                                            "error", "File write error: " + JSON.stringify(res)
+                                        ])
+                                    }
+                                })
+                            })
+                        })
+                    }
+
+                    return false
+                }
+            }
         }
     }
 })
@@ -721,6 +869,19 @@ var app = new Vue({
 
 var follow
 class Page extends ZeroFrame {
+    selectUser() {
+        this.cmd("certSelect", {
+            accepted_domains: [
+                "zeroid.bit",
+                "zeroverse.bit",
+                "kaffie.bit",
+                "cryptoid.bit",
+                "kxoid.bit"
+            ]
+        })
+        return false
+    }
+
     onRequest(cmd, message) {
         if (cmd == "setSiteInfo") {
             this.site_info = message.params
@@ -737,6 +898,63 @@ class Page extends ZeroFrame {
         //     "<br>- Size: " + site_info.settings.size +
         //     "<br>- Modified: " + (new Date(site_info.content.modified * 1000))
         // )
+    }
+
+    verifyUserFiles(cb) {
+        var data_inner_path = "data/users/" + this.site_info.auth_address + "/data.json"
+        var content_inner_path = "data/users/" + this.site_info.auth_address + "/content.json"
+
+        page.cmd("fileGet", {
+            "inner_path": data_inner_path,
+            "required": false
+        }, (data) => {
+            if (data) {
+                var data = JSON.parseS(data)
+                if (data === null) {
+                    page.cmd("wrapperNotification", [
+                        "error", "The following file has invalid content!\n" + data_inner_path
+                    ])
+                    return false
+                }
+            } else {
+                var data = {}
+            }
+
+            if (!data.hasOwnProperty("comment")) {
+                data.comment = []
+            }
+
+            var json_raw = unescape(encodeURIComponent(JSON.stringify(data, undefined, '\t')))
+            var json_rawA = btoa(json_raw)
+
+            page.cmd("fileWrite", [
+                data_inner_path,
+                json_rawA
+            ], (res) => {
+                if (res == "ok") {
+                    console.log("data.json HAS BEEN UPDATED!")
+
+                    typeof cb === "function" && cb(data)
+                } else {
+                    page.cmd("wrapperNotification", [
+                        "error", "File write error: " + JSON.stringify(res)
+                    ])
+                }
+            })
+        })
+    }
+
+    verifyUser() {
+        var rtrn = true
+
+        if (!this.site_info.cert_user_id) {
+            rtrn = false
+            this.cmd("wrapperNotification", [
+                "info", "Please, select your account.", 5000
+            ])
+            this.selectUser()
+        }
+        return rtrn
     }
 
     onOpenWebsocket() {
