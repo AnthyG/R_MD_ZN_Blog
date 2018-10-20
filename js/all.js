@@ -5366,7 +5366,8 @@ var app = new Vue({
         postList: [],
         tagList: [],
         pPostList: [],
-        commentList: []
+        commentList: [],
+        likeList: []
     },
     methods: {
         markDefault: function(d) {
@@ -5424,6 +5425,17 @@ var app = new Vue({
                 if (A < B) return 1
                 return 0
             })
+        },
+        printLikes: function(post_id) {
+            return app.likeList.filter(function(like_item) {
+                return like_item.post_id === post_id
+            })
+        },
+        hasLiked: function(post_id) {
+            var likedarr = app.printLikes(post_id).filter(function(like_item) {
+                return like_item.auth_address === page.site_info.auth_address
+            })
+            return likedarr.length > 0
         },
         loadDefaults: function() {
             console.log("Loading defaults..")
@@ -5562,6 +5574,16 @@ var app = new Vue({
                         typeof cb === "function" ? cb(commentList) : genIt()
                     })
                 }
+                var get_likeList = function(cb) {
+                    console.log("getting likeList", cb)
+                    page.cmd("dbQuery", [
+                        "SELECT * FROM like JOIN json USING (json_id)"
+                    ], (likeList) => {
+                        app.likeList = likeList
+
+                        typeof cb === "function" ? cb(likeList) : genIt()
+                    })
+                }
                 var get_postList = function(cb) {
                     console.log("getting postList", cb)
                     page.cmd("dbQuery", [
@@ -5637,23 +5659,33 @@ var app = new Vue({
                     }
                 }
 
-                if (!app.tagList.length > 0) {
-                    get_tagList(function() {
-                        if (!app.commentList.length > 0) {
-                            get_commentList(function() {
-                                getStuff()
-                            })
-                        } else {
+                var cLikeList = function() {
+                    if (!app.likeList.length > 0) {
+                        get_likeList(function() {
                             getStuff()
-                        }
-                    })
-                } else {
+                        })
+                    } else {
+                        getStuff()
+                    }
+                }
+
+                var cCommentList = function() {
                     if (!app.commentList.length > 0) {
                         get_commentList(function() {
                             getStuff()
                         })
                     } else {
                         getStuff()
+                    }
+                }
+
+                var cTagList = function() {
+                    if (!app.tagList.length > 0) {
+                        get_tagList(function() {
+                            cCommentList()
+                        })
+                    } else {
+                        cCommentList()
                     }
                 }
             }, 0)
@@ -5958,7 +5990,7 @@ var app = new Vue({
                 }
             }
         },
-        comment: function() {
+        commenter: function() {
             return {
                 submit: function(post_id) {
                     var verified = page.verifyUser()
@@ -5990,12 +6022,16 @@ var app = new Vue({
                                     var data = {}
                                 }
 
+                                if (!data.hasOwnProperty("comment")) {
+                                    data.comment = []
+                                }
+
                                 var ncomment = {
                                     "body": app.commenter_body,
                                     "date_added": parseInt(moment().utc().format("x")),
-                                    "post_id": post_id,
-                                    // "post_id": app.pPostList[0].post_id
+                                    "post_id": post_id
                                 }
+
                                 var di = data.comment.push(ncomment)
 
                                 // Encode data array to utf8 json text
@@ -6033,6 +6069,75 @@ var app = new Vue({
                     return false
                 }
             }
+        },
+        liker: function(post_id) {
+            var verified = page.verifyUser()
+            if (!verified) {
+                return false
+            }
+
+            console.log("Submitting like/unlike")
+
+            page.verifyUserFiles(function() {
+                var data_inner_path = "data/users/" + page.site_info.auth_address + "/data.json"
+                var content_inner_path = "data/users/" + page.site_info.auth_address + "/content.json"
+
+                page.cmd("fileGet", {
+                    "inner_path": data_inner_path,
+                    "required": false
+                }, (data) => {
+                    console.log(JSON.copy(data))
+                    if (data) {
+                        var data = JSON.parseS(data)
+                        if (data === null) {
+                            page.cmd("wrapperNotification", [
+                                "error", "The following file has invalid content!\n" + data_inner_path
+                            ])
+                            return false
+                        }
+                    } else {
+                        var data = {}
+                    }
+
+                    if (!data.hasOwnProperty("like")) {
+                        data.like = []
+                    }
+
+                    var nlike = {
+                        "date_added": parseInt(moment().utc().format("x")),
+                        "post_id": post_id
+                    }
+
+                    var di = data.push(nlike)
+
+                    // Encode data array to utf8 json text
+                    var json_raw = unescape(encodeURIComponent(JSON.stringify(data, undefined, '\t')))
+                    var json_rawA = btoa(json_raw)
+
+                    // Write file to disk
+                    page.cmd("fileWrite", [
+                        data_inner_path,
+                        json_rawA
+                    ], (res) => {
+                        if (res == "ok") {
+                            nlike.cert_user_id = page.site_info.cert_user_id
+                            nlike.directory = "users/" + page.site_info.auth_address
+                            nlike.file_name = "data.json"
+
+                            app.likeList.push(nlike)
+
+                            page.cmd("sitePublish", {
+                                "inner_path": content_inner_path,
+                                "sign": true
+                            }, function() {})
+                        } else {
+                            this.cmd("wrapperNotification", [
+                                "error", "File write error: " + JSON.stringify(res)
+                            ])
+                        }
+                    })
+                })
+            })
         }
     }
 })
@@ -6094,6 +6199,9 @@ class Page extends ZeroFrame {
 
             if (!data.hasOwnProperty("comment")) {
                 data.comment = []
+            }
+            if (!data.hasOwnProperty("like")) {
+                data.like = []
             }
 
             var json_raw = unescape(encodeURIComponent(JSON.stringify(data, undefined, '\t')))

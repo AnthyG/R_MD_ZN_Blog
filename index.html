@@ -126,6 +126,7 @@
                 </section>
                 <section class="comments">
                     <div class="container">
+                        <a class="btn btn-accent" v-bind:onclick="'return app.liker(' + post.post_id + ');'"><span v-html="printLikes(post.post_id).length"></span><i class="material-icons" v-html="hasLiked(post.post_id) ? 'favorite' : 'favorite_border'"></i></a>
                         <input class="comment-toggle" type="checkbox" v-bind:id="'comment_toggle_' + post.post_id" />
                         <label class="toggle" v-bind:for="'comment_toggle_' + post.post_id">
                             Toggle Comments <i class="indicator"></i>
@@ -133,7 +134,7 @@
                         <div class="wrapper">
                             <div class="comment_inputs">
                                 <textarea class="comment_inputcntnt input" v-model="commenter_body" placeholder="Go ahead and leave a comment! :)" rows="3"></textarea>
-                                <a class="btn btn-accent" v-bind:onclick="'return app.comment().submit(' + post.post_id + ');'">Submit</a>
+                                <a class="btn btn-accent" v-bind:onclick="'return app.commenter().submit(' + post.post_id + ');'">Submit</a>
                             </div>
                             <div v-for="(comment, index) in printComments(post.post_id)" class="comment">
                                 <div class="user">

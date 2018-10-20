@@ -24,6 +24,9 @@
             "to_table": [{
                 "node": "comment",
                 "table": "comment"
+            }, {
+                "node": "like",
+                "table": "like"
             }]
         },
         "users/.+/content.json": {
@@ -95,6 +98,15 @@
             ],
             "indexes": ["CREATE UNIQUE INDEX comment_post_uri ON comment(body, post_id)"],
             "schema_changed": 2
+        },
+        "like": {
+            "cols": [
+                ["date_added", "INTEGER"],
+                ["post_id", "REFERENCES post(post_id)"],
+                ["json_id", "INTEGER REFERENCES json (json_id)"]
+            ],
+            "indexes": ["CREATE UNIQUE INDEX like_post_uri ON like(date_added, post_id)"],
+            "schema_changed": 0
         }
     },
     "feeds": {
