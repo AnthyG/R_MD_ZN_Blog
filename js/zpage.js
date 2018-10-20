@@ -338,10 +338,11 @@ var app = new Vue({
 
                         app.quote = post.quote
                         app.quoteBy = post.quoteBy
-                        app.hide_quote = false
-                            // app.date = moment(post.date_published, "x").format("MMMM Do, YYYY")
+                        if (app.quote && app.quoteBy) {
+                            app.hide_quote = false
+                            app.collapse_header = false
+                        }
                         app.hide_date = false
-                        app.collapse_header = false
                     } else if (tL === 2) { // Posts with tag
                         app.hide_postlist = false
 
@@ -787,6 +788,8 @@ var app = new Vue({
                                             ])
                                         })
                                     })
+                                } else {
+                                    app.loadEditor(npost.post_id)
                                 }
                             } else {
                                 page.cmd("wrapperNotification", [

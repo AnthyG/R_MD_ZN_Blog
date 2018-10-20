@@ -34,8 +34,8 @@
 </head>
 
 <body>
-    <div id="app" v-bind:class="{'hide2' : hide_app }">
-        <header v-bind:class="{'collapsed' : collapse_header }">
+    <div id="app" v-bind:class="{'hide2': hide_app }">
+        <header v-bind:class="{'collapsed': collapse_header }">
             <div class="container">
                 <nav>
                     <a class="logo" href="?" onclick="return app.loadBlog(-1);">
@@ -50,10 +50,10 @@
                         <a href="#Follow" id="subscribe_btn" onclick="return false;"><span>Subscribe</span><span>Subscribed</span></a>
                     </div>
                 </nav>
-                <blockquote v-bind:class="{'hide2' : hide_quote }">{{ quote }}
+                <blockquote v-bind:class="{'hide2': hide_quote }">{{ quote }}
                     <span>&mdash; {{ quoteBy }}</span>
                 </blockquote>
-                <div class="date" v-bind:class="{'hide2' : hide_date }">
+                <div class="date" v-bind:class="{'hide2': hide_date, 'date-centered': (!quote && !quoteBy) }">
                     <i class="material-icons prT-2">event</i>
                     <span v-if="!singlePost">Created {{ moment(defaults.created, "x").format("MMMM Do, YYYY") }}</span>
                     <span v-else>{{ moment(pPostList[0].date_published, "x").format("MMMM Do, YYYY") }}</span>
@@ -63,7 +63,7 @@
 
         <isowner v-if="isOwner">
             <a class="btn btn-accent btn-solid newpostbtn" v-bind:href="'?E:New'" v-bind:onclick="'return app.loadEditor(null);'">Create new post</a>
-            <editor id="editor" v-bind:class="{'hide2' : hide_editor }">
+            <editor id="editor" v-bind:class="{'hide2': hide_editor }">
                 <section>
                     <div class="container">
                         <input class="editor_title input" placeholder="Title" type="text" v-model="editor_title" />

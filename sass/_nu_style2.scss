@@ -52,6 +52,13 @@ header.collapsed {
     height: 10vh;
 }
 
+header {
+    .date.date-centered {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
 .hide2 {
     display: none;
 }
