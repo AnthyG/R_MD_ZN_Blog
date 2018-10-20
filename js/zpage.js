@@ -261,7 +261,7 @@ var app = new Vue({
         },
         hasLiked: function(post_id) {
             var likedarr = app.printLikes(post_id).filter(function(like_item) {
-                return like_item.auth_address === page.site_info.auth_address
+                return like_item.cert_user_id === page.site_info.cert_user_id
             })
             return likedarr.length > 0
         },
@@ -516,6 +516,8 @@ var app = new Vue({
                         cCommentList()
                     }
                 }
+
+                cTagList()
             }, 0)
 
             return false
@@ -931,12 +933,31 @@ var app = new Vue({
                         data.like = []
                     }
 
-                    var nlike = {
-                        "date_added": parseInt(moment().utc().format("x")),
-                        "post_id": post_id
-                    }
+                    var hasLiked = app.hasLiked(post_id)
+                    if (hasLiked) {
+                        var filter_likeListI = -1
+                        app.likeList.filter(function(like_item) {
+                            filter_likeListI++
 
-                    var di = data.push(nlike)
+                            if (like_item.post_id === post_id) {
+                                app.likeList.splice(filter_likeListI)
+                                data.like.splice(filter_likeListI)
+                            }
+                        })
+                    } else {
+                        var nlike = {
+                            "date_added": parseInt(moment().utc().format("x")),
+                            "post_id": post_id
+                        }
+
+                        var di = data.like.push(JSON.copy(nlike))
+
+                        nlike.cert_user_id = page.site_info.cert_user_id
+                        nlike.directory = "users/" + page.site_info.auth_address
+                        nlike.file_name = "data.json"
+
+                        app.likeList.push(nlike)
+                    }
 
                     // Encode data array to utf8 json text
                     var json_raw = unescape(encodeURIComponent(JSON.stringify(data, undefined, '\t')))
@@ -948,12 +969,6 @@ var app = new Vue({
                         json_rawA
                     ], (res) => {
                         if (res == "ok") {
-                            nlike.cert_user_id = page.site_info.cert_user_id
-                            nlike.directory = "users/" + page.site_info.auth_address
-                            nlike.file_name = "data.json"
-
-                            app.likeList.push(nlike)
-
                             page.cmd("sitePublish", {
                                 "inner_path": content_inner_path,
                                 "sign": true

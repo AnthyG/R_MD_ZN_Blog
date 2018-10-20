@@ -368,3 +368,11 @@ $btnclrs: (primary, $color-p),
         resize: vertical;
     }
 }
+
+.like-btn {
+    &>.material-icons {
+        position: relative;
+        top: 6px;
+        margin-right: 6px;
+    }
+}

@@ -940,4 +940,9 @@ a.after:hover:after {
     width: 100%;
     min-width: 100%;
     resize: vertical; }
+
+.like-btn > .material-icons {
+  position: relative;
+  top: 6px;
+  margin-right: 6px; }
 /*# sourceMappingURL=main.min.css.map */
