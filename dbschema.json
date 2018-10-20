@@ -106,7 +106,7 @@
                 ["json_id", "INTEGER REFERENCES json (json_id)"]
             ],
             "indexes": ["CREATE UNIQUE INDEX like_post_uri ON like(date_added, post_id)"],
-            "schema_changed": 0
+            "schema_changed": 2
         }
     },
     "feeds": {

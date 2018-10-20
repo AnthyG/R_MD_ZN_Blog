@@ -5672,10 +5672,10 @@ var app = new Vue({
                 var cCommentList = function() {
                     if (!app.commentList.length > 0) {
                         get_commentList(function() {
-                            getStuff()
+                            cLikeList()
                         })
                     } else {
-                        getStuff()
+                        cLikeList()
                     }
                 }
 
