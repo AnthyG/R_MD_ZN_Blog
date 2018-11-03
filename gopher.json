@@ -1,0 +1,88 @@
+{
+    "rules": {
+        "": [
+            "${:site_title} for ZeroNet Gopher",
+            "${:site_peers} peers - ${:site_address}",
+            "",
+            "${:site_description}",
+            "",
+            { "sql": "SELECT 'i', key || ': ' || value FROM json LEFT JOIN keyvalue USING (json_id) WHERE directory = '' AND file_name = 'data.json'" },
+            "", ["1", "All posts", "/${:site_address}/posts"],
+            ["1", "All tags", "/${:site_address}/tags"],
+            ["1", "All pages", "/${:site_address}/pages"],
+            "",
+            { "sql": "SELECT 'i', title || ': ' || links FROM footer" },
+            "",
+            "", ["1", "For devs", "/${:site_address}/devs/"],
+            "",
+            "Other Zopherholes to Check Out", ["1", "ZeroLSTN Gopher", "/1MQveQ3RPpimXX2wjW2geAGkNJ1GdXkvJ3/"],
+            ["1", "KxoVid Gopher", "/14c5LUN73J7KKMznp9LvZWkxpZFWgE1sDz/"]
+        ],
+        "devs": [
+            ["1", "[home]", "/${:site_address}/"],
+            "", ["0", "content.json", "/${:site_address}/content.json"],
+            ["0", "dbschema.json", "/${:site_address}/dbschema.json"],
+            ["0", "Users content.json", "/${:site_address}/data/users/content.json"],
+            "", ["1", "data", "/${:site_address}/data"]
+        ],
+        "posts": [
+            ["1", "[home]", "/${:site_address}/"],
+            "",
+            { "sql": "SELECT '1', title, '/' || :site_address || '/posts/' || post_id FROM post ORDER BY date_published DESC" }
+        ],
+        "posts/:post_id": [
+            ["1", "[back to post-list]", "/${:site_address}/posts"],
+            ["1", "[comments]", "/${:site_address}/posts/${:post_id}/comments"],
+            ["1", "[tags]", "/${:site_address}/posts/${:post_id}/tags"],
+            ["1", "[likes]", "/${:site_address}/posts/${:post_id}/likes"],
+            "Post #${:post_id}",
+            { "sql": "SELECT 'i', title || '\n\non ' || DATETIME(date_published / 1000, 'unixepoch', 'localtime') || '\n\n>---\n>' || quote || '\n>- ' || quoteBy || '\n>---\n\n' || body FROM post JOIN json, like, tag USING (post_id) WHERE post.post_id = :post_id OR like.post_id = :post_id OR tag.post_id = :post_id" }
+        ],
+        "posts/:post_id/comments": [
+            ["1", "[post]", "/${:site_address}/posts/${:post_id}"],
+            ["1", "[tags]", "/${:site_address}/posts/${:post_id}/tags"],
+            ["1", "[likes]", "/${:site_address}/posts/${:post_id}/likes"],
+            "Comments for post #${:post_id}",
+            "",
+            { "sql": "SELECT 'i', cert_user_id || ' on ' || DATETIME(date_added / 1000, 'unixepoch', 'localtime') || '\n' || body FROM comment JOIN json USING (json_id) WHERE post_id = CAST(:post_id AS INTEGER)" }
+        ],
+        "posts/:post_id/tags": [
+            ["1", "[post]", "/${:site_address}/posts/${:post_id}"],
+            ["1", "[likes]", "/${:site_address}/posts/${:post_id}/likes"],
+            ["1", "[comments]", "/${:site_address}/posts/${:post_id}/comments"],
+            "Tags for post #${:post_id}",
+            "",
+            { "sql": "SELECT 'i', value FROM tag WHERE post_id = CAST(:post_id AS INTEGER)" }
+        ],
+        "posts/:post_id/likes": [
+            ["1", "[post]", "/${:site_address}/posts/${:post_id}"],
+            ["1", "[comments]", "/${:site_address}/posts/${:post_id}/comments"],
+            ["1", "[tags]", "/${:site_address}/posts/${:post_id}/tags"],
+            "Likes for post #${:post_id}",
+            "",
+            { "sql": "SELECT 'i', cert_user_id || ' on ' || DATETIME(date_added / 1000, 'unixepoch', 'localtime') FROM like JOIN json USING (json_id) WHERE post_id = CAST(:post_id AS INTEGER)" }
+        ],
+        "tags": [
+            ["1", "[home]", "/${:site_address}/"],
+            "",
+            { "sql": "SELECT '1', value, '/' || :site_address || '/tags/' || value FROM tag" }
+        ],
+        "tags/:value": [
+            ["1", "[back to tag-list]", "/${:site_address}/tags"],
+            "",
+            "Here are all the posts with tag ${:value}",
+            "",
+            { "sql": "SELECT '1', post.title, '/' || :site_address || '/posts/' || post.post_id FROM post JOIN tag USING (post_id) WHERE tag.value = :value" }
+        ],
+        "pages": [
+            ["1", "[home]", "/${:site_address}/"],
+            "",
+            { "sql": "SELECT '1', title, '/' || :site_address || '/pages/' || title FROM page" }
+        ],
+        "pages/:title": [
+            ["1", "[back to page-list]", "/${:site_address}/pages"],
+            "",
+            { "sql": "SELECT 'i', title || '\n\n' || body FROM page WHERE title = :title" }
+        ]
+    }
+}
